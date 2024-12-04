@@ -12,7 +12,7 @@ application { mainClass.set("org.shvedchikov.domidzebot.DomidzeBotApplication") 
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(19)
 	}
 }
 
