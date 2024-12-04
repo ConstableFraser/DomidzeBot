@@ -10,11 +10,6 @@ version = "0.0.1-SNAPSHOT"
 
 application { mainClass.set("org.shvedchikov.domidzebot.DomidzeBotApplication") }
 
-configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
-}
 
 repositories {
 	mavenCentral()
