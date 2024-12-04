@@ -10,10 +10,16 @@ version = "0.0.1-SNAPSHOT"
 
 application { mainClass.set("org.shvedchikov.domidzebot.DomidzeBotApplication") }
 
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
 
 repositories {
 	mavenCentral()
 }
+
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web:3.3.2")
