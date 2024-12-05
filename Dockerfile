@@ -16,6 +16,14 @@
 # Specify the command to run the application
 #CMD ["java", "-jar", "app.jar"]
 
-FROM openjdk:19
-COPY ./build/libs/DomidzeBot-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+FROM gradle:8.11-jdk21-corretto
+WORKDIR /
+COPY / .
+RUN ./gradlew installDist
+CMD ./build/install/app/bin/app
+
+
+#=====READY========
+#FROM openjdk:19
+#COPY ./build/libs/DomidzeBot-0.0.1-SNAPSHOT.jar app.jar
+#ENTRYPOINT ["java","-jar","/app.jar"]
