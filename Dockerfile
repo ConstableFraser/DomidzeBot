@@ -19,8 +19,8 @@
 FROM gradle:8.11-jdk21-corretto
 WORKDIR /
 COPY / .
-RUN ./gradlew installDist
-CMD ./build/install/app/bin/app
+RUN ./gradlew build
+CMD ./build/install/libs
 
 
 #=====READY========
