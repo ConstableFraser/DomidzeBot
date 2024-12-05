@@ -16,6 +16,6 @@
 # Specify the command to run the application
 #CMD ["java", "-jar", "app.jar"]
 
-FROM gradle:8.0-jdk19
+FROM openjdk:19
 COPY ./build/libs/DomidzeBot-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
