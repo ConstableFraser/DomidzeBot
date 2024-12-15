@@ -10,11 +10,11 @@ version = "0.0.1-SNAPSHOT"
 
 application { mainClass.set("org.shvedchikov.domidzebot.DomidzeBotApplication") }
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(19)
-	}
-}
+//java {
+//	toolchain {
+//		languageVersion = JavaLanguageVersion.of(19)
+//	}
+//}
 
 repositories {
 	mavenCentral()
