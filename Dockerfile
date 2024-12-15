@@ -6,6 +6,7 @@ COPY settings.gradle.kts .
 COPY gradlew .
 COPY ./src src
 COPY ./config config
+COPY ./build config
 ENV JAVA_OPTS="-Xmx4g -Xms1024M"
 RUN ./gradlew --no-daemon --stacktrace dependencies
 RUN ./gradlew --no-daemon --stacktrace build
