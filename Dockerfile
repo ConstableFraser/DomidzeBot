@@ -6,9 +6,9 @@ COPY settings.gradle.kts .
 COPY gradlew .
 COPY ./src src
 COPY ./config config
-ENV JAVA_OPTS="-Xmx1024m -Xms1024M"
-RUN ./gradlew --stacktrace dependencies
-RUN ./gradlew --stacktrace build
+ENV JAVA_OPTS="-Xmx4g -Xms1024M"
+RUN ./gradlew --no-daemon --stacktrace dependencies
+RUN ./gradlew --no-daemon --stacktrace build
 COPY ./build/libs/DomidzeBot-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app.jar"]
