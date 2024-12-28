@@ -44,7 +44,7 @@ jobs:
           POSTGRESQL_PORT: ${{vars.POSTGRESQL_PORT}}
           POSTGRESQL_DBNAME: ${{vars.POSTGRESQL_DBNAME}}
           POSTGRESQL_USER: ${{vars.POSTGRESQL_USER}}
-          POSTGRESQL_PASSWORD: ${{vars.POSTGRESQL_PASSWORD}}
+          POSTGRESQL_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
         run: ./gradlew test
 
       - name: Publish code coverage
