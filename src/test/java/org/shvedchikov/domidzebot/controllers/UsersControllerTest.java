@@ -59,13 +59,13 @@ public class UsersControllerTest {
 
     @BeforeEach
     public void setUp() {
-        var host = String.format("POSTGRESQL_USER: \t%s",
-                System.getProperty("POSTGRESQL_USER", "ERROR in POSTGRESQL_HOST"));
+        var host = String.format("POSTGRESQL_USER: \t\n[%s]\n[%s]",
+                System.getProperty("POSTGRESQL_USER", "ERROR in POSTGRESQL_HOST"),
+                System.getenv("POSTGRESQL_USER"));
 
         log.info(host);
 
-        System.out.println("\n\nPOSTGRESQL_USER: \t"
-                + System.getProperty("POSTGRESQL_USER", "ERROR in POSTGRESQL_HOST"));
+        System.out.println("\n\nPOSTGRESQL_USER: \t" + host);
 
         token = jwt().jwt(builder -> builder.subject("bot@domidze.ru"));
         testUser = Instancio.of(modelGenerator.getUserModel())
@@ -107,22 +107,7 @@ public class UsersControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-//        System.out.println("POSTGRESQL_HOST: \t"
-//                + System.getProperty("POSTGRESQL_HOST", "ERROR in POSTGRESQL_HOST"));
-//
-//        System.out.println("POSTGRESQL_PORT: \t"
-//                + System.getProperty("POSTGRESQL_PORT: \t"
-//                + "POSTGRESQL_PORT", "ERROR in POSTGRESQL_PORT"));
-//
-//        System.out.println("POSTGRESQL_DBNAME: \t"
-//                + System.getProperty("POSTGRESQL_DBNAME", "ERROR in POSTGRESQL_DBNAME"));
-//
-//        System.out.println("POSTGRESQL_PASSWORD: \t"
-//                + System.getProperty("POSTGRESQL_PASSWORD", "ERROR in POSTGRESQL_PASSWORD"));
-//
-//        System.out.println("POSTGRESQL_USER: \t"
-//                + System.getProperty("POSTGRESQL_USER", "ERROR in POSTGRESQL_USER"));
-//
+
         var result = mockMvc.perform(get("/api/users").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();

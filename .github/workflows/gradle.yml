@@ -13,12 +13,13 @@ jobs:
         image: postgres:13
         env:
           POSTGRES_DB: ${{vars.POSTGRESQL_DBNAME}}
+          POSTGRES_HOST: ${{vars.POSTGRESQL_HOST}}
           POSTGRES_USER: ${{vars.POSTGRESQL_USER}}
           POSTGRES_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -d ${{vars.POSTGRESQL_DBNAME}} -h ${{vars.POSTGRESQL_HOST}} -U ${{vars.POSTGRESQL_USER}}"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
