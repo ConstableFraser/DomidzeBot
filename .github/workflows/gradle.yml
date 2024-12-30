@@ -18,7 +18,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -D ${{vars.POSTGRESQL_DBNAME}} -U ${{vars.POSTGRESQL_USER}}  --host ${{vars.POSTGRESQL_HOST}} --port ${{vars.POSTGRESQL_PORT}}"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5

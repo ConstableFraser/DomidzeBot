@@ -1,11 +1,11 @@
 package org.shvedchikov.domidzebot.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.shvedchikov.domidzebot.DomidzeBotApplication;
 import org.shvedchikov.domidzebot.exception.ResourceNotFoundException;
 import org.shvedchikov.domidzebot.model.User;
 import org.shvedchikov.domidzebot.repository.UserRepository;
@@ -33,10 +33,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.MOCK,
-        classes = DomidzeBotApplication.class)
+@SpringBootTest
 @AutoConfigureMockMvc
+@Slf4j
 public class UsersControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -100,22 +99,27 @@ public class UsersControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        System.out.println("POSTGRESQL_HOST: \t"
-                + System.getProperty("POSTGRESQL_HOST", "ERROR in POSTGRESQL_HOST"));
 
-        System.out.println("POSTGRESQL_PORT: \t"
-                + System.getProperty("POSTGRESQL_PORT: \t"
-                + "POSTGRESQL_PORT", "ERROR in POSTGRESQL_PORT"));
+        var host = String.format("POSTGRESQL_HOST: \t%s", System.getProperty("POSTGRESQL_HOST", "ERROR in POSTGRESQL_HOST"));
 
-        System.out.println("POSTGRESQL_DBNAME: \t"
-                + System.getProperty("POSTGRESQL_DBNAME", "ERROR in POSTGRESQL_DBNAME"));
+        log.info(host);
 
-        System.out.println("POSTGRESQL_PASSWORD: \t"
-                + System.getProperty("POSTGRESQL_PASSWORD", "ERROR in POSTGRESQL_PASSWORD"));
-
-        System.out.println("POSTGRESQL_USER: \t"
-                + System.getProperty("POSTGRESQL_USER", "ERROR in POSTGRESQL_USER"));
-
+//        System.out.println("POSTGRESQL_HOST: \t"
+//                + System.getProperty("POSTGRESQL_HOST", "ERROR in POSTGRESQL_HOST"));
+//
+//        System.out.println("POSTGRESQL_PORT: \t"
+//                + System.getProperty("POSTGRESQL_PORT: \t"
+//                + "POSTGRESQL_PORT", "ERROR in POSTGRESQL_PORT"));
+//
+//        System.out.println("POSTGRESQL_DBNAME: \t"
+//                + System.getProperty("POSTGRESQL_DBNAME", "ERROR in POSTGRESQL_DBNAME"));
+//
+//        System.out.println("POSTGRESQL_PASSWORD: \t"
+//                + System.getProperty("POSTGRESQL_PASSWORD", "ERROR in POSTGRESQL_PASSWORD"));
+//
+//        System.out.println("POSTGRESQL_USER: \t"
+//                + System.getProperty("POSTGRESQL_USER", "ERROR in POSTGRESQL_USER"));
+//
         var result = mockMvc.perform(get("/api/users").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
