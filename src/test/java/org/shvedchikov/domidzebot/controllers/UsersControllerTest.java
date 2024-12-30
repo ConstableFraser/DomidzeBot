@@ -5,6 +5,7 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.shvedchikov.domidzebot.DomidzeBotApplication;
 import org.shvedchikov.domidzebot.exception.ResourceNotFoundException;
 import org.shvedchikov.domidzebot.model.User;
 import org.shvedchikov.domidzebot.repository.UserRepository;
@@ -32,7 +33,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@SpringBootTest
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.MOCK,
+        classes = DomidzeBotApplication.class)
 @AutoConfigureMockMvc
 public class UsersControllerTest {
     @Autowired
