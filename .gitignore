@@ -15,7 +15,7 @@ local.env
 .springBeans
 .sts4-cache
 bin/
-certs/
+#certs/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
