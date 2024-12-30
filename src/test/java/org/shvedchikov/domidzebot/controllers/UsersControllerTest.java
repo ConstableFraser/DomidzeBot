@@ -59,14 +59,6 @@ public class UsersControllerTest {
 
     @BeforeEach
     public void setUp() {
-        var host = String.format("POSTGRESQL_USER: \t\n[%s]\n[%s]",
-                System.getProperty("POSTGRESQL_USER", "ERROR in POSTGRESQL_HOST"),
-                System.getenv("POSTGRESQL_USER"));
-
-        log.info(host);
-
-        System.out.println("\n\nPOSTGRESQL_USER: \t" + host);
-
         token = jwt().jwt(builder -> builder.subject("bot@domidze.ru"));
         testUser = Instancio.of(modelGenerator.getUserModel())
                 .create();
