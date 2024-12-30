@@ -40,11 +40,11 @@ jobs:
 
       - name: Run tests
         env:
-          POSTGRESQL_HOST: localhost
-          POSTGRESQL_PORT: 5432
-          POSTGRESQL_DBNAME: testdb
-          POSTGRESQL_USER: testuser
-          POSTGRESQL_PASSWORD: testpassword
+          POSTGRESQL_HOST: ${{vars.POSTGRESQL_HOST}}
+          POSTGRESQL_PORT: ${{vars.POSTGRESQL_PORT}}
+          POSTGRESQL_DBNAME: ${{vars.POSTGRESQL_DBNAME}}
+          POSTGRESQL_USER: ${{vars.POSTGRESQL_USER}}
+          POSTGRESQL_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
         run: ./gradlew test
 
       - name: Publish code coverage
