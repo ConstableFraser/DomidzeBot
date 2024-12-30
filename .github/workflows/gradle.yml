@@ -12,9 +12,9 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          POSTGRES_DB: testdb
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: ${{vars.POSTGRESQL_DBNAME}}
+          POSTGRES_USER: ${{vars.POSTGRESQL_USER}}
+          POSTGRES_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
         ports:
           - 5432:5432
         options: >-
