@@ -45,6 +45,8 @@ jobs:
           POSTGRESQL_DBNAME: testdb
           POSTGRESQL_USER: testuser
           POSTGRESQL_PASSWORD: testpassword
+          PRIVATE_KEY: ${{vars.PRIVATE_KEY}}
+          PUBLIC_KEY: ${{vars.PUBLIC_KEY}}
         run: ./gradlew test
 
       - name: Publish code coverage
