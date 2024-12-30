@@ -59,6 +59,14 @@ public class UsersControllerTest {
 
     @BeforeEach
     public void setUp() {
+        var host = String.format("POSTGRESQL_USER: \t%s",
+                System.getProperty("POSTGRESQL_USER", "ERROR in POSTGRESQL_HOST"));
+
+        log.info(host);
+
+        System.out.println("\n\nPOSTGRESQL_USER: \t"
+                + System.getProperty("POSTGRESQL_USER", "ERROR in POSTGRESQL_HOST"));
+
         token = jwt().jwt(builder -> builder.subject("bot@domidze.ru"));
         testUser = Instancio.of(modelGenerator.getUserModel())
                 .create();
@@ -99,11 +107,6 @@ public class UsersControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-
-        var host = String.format("POSTGRESQL_HOST: \t%s", System.getProperty("POSTGRESQL_HOST", "ERROR in POSTGRESQL_HOST"));
-
-        log.info(host);
-
 //        System.out.println("POSTGRESQL_HOST: \t"
 //                + System.getProperty("POSTGRESQL_HOST", "ERROR in POSTGRESQL_HOST"));
 //
