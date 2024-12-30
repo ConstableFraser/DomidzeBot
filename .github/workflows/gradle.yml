@@ -12,14 +12,13 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          POSTGRES_DB: ${{vars.POSTGRESQL_DBNAME}}
-          POSTGRES_HOST: ${{vars.POSTGRESQL_HOST}}
-          POSTGRES_USER: ${{vars.POSTGRESQL_USER}}
-          POSTGRES_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -d ${{vars.POSTGRESQL_DBNAME}} -h ${{vars.POSTGRESQL_HOST}} -U ${{vars.POSTGRESQL_USER}}"
+          --health-cmd "pg_isready -d testdb -h localhost -U testpassword"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -41,11 +40,11 @@ jobs:
 
       - name: Run tests
         env:
-          POSTGRESQL_HOST: ${{vars.POSTGRESQL_HOST}}
-          POSTGRESQL_PORT: ${{vars.POSTGRESQL_PORT}}
-          POSTGRESQL_DBNAME: ${{vars.POSTGRESQL_DBNAME}}
-          POSTGRESQL_USER: ${{vars.POSTGRESQL_USER}}
-          POSTGRESQL_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
+          POSTGRESQL_HOST: localhost
+          POSTGRESQL_PORT: 5432
+          POSTGRESQL_DBNAME: testdb
+          POSTGRESQL_USER: testuser
+          POSTGRESQL_PASSWORD: testpassword
         run: ./gradlew test
 
       - name: Publish code coverage
