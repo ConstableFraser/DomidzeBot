@@ -19,6 +19,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,6 +61,7 @@ public class UsersControllerTest {
         token = jwt().jwt(builder -> builder.subject("bot@domidze.ru"));
         testUser = Instancio.of(modelGenerator.getUserModel())
                 .create();
+        testUser.setHouses(List.of());
         userRepository.save(testUser);
 
         testUserForUpdateDelete = new User();

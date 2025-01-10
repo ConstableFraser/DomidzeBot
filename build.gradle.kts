@@ -36,7 +36,7 @@ dependencies {
 	implementation("org.instancio:instancio-junit:5.0.1")
 	testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.7")
 	implementation("net.datafaker:datafaker:2.3.0")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.3")
 }
 
 tasks.withType<Test> {

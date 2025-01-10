@@ -44,13 +44,14 @@ public class UsersController {
     }
 
     @GetMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public UserDTO show(@PathVariable Long id) {
         return userService.show(id);
     }
 
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDTO update(@RequestBody UserUpdateDTO userData, @PathVariable Long id) {
+    public UserDTO update(@Valid @RequestBody UserUpdateDTO userData, @PathVariable Long id) {
         return userService.update(userData, id);
     }
 
