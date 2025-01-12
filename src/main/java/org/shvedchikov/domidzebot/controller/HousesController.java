@@ -45,11 +45,13 @@ public class HousesController {
     }
 
     @GetMapping("/houses/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public HouseDTO show(@PathVariable Long id) {
         return houseService.show(id);
     }
 
     @GetMapping("/houses/filter")
+    @ResponseStatus(HttpStatus.OK)
     public List<HouseDTO> showByOwnerIdAndNumberHouse(@RequestParam(name = "owner") Long ownerId,
                                   @RequestParam(name = "house", required = false) Integer houseNumber) {
         return houseService.getByOwnerIdAndNumberHouse(ownerId, houseNumber);

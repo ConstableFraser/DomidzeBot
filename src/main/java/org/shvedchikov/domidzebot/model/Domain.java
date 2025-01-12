@@ -1,14 +1,15 @@
 package org.shvedchikov.domidzebot.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -27,17 +30,20 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
-@Table(name = "houses")
-public class House {
+@Table(name = "domains")
+public class Domain {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @ToString.Include
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Column(unique = true)
     @NotNull
+    @Size(min = 2, message = "{size domain name too short}")
+    @Size(max = 100, message = "{size domain name too long}")
     @ToString.Include
-    private Integer number;
+    private String domain;
 
     @LastModifiedDate
     private LocalDate updatedAt;
@@ -45,11 +51,6 @@ public class House {
     @CreatedDate
     private LocalDate createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    private User owner;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "domain_id")
-    private Domain domain;
+    @OneToMany(mappedBy = "domain", cascade = CascadeType.ALL)
+    private List<House> houses = new ArrayList<>();
 }

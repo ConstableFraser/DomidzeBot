@@ -1,14 +1,15 @@
 package org.shvedchikov.domidzebot.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.shvedchikov.domidzebot.exception.ResourceNotFoundException;
+import org.shvedchikov.domidzebot.model.Domain;
 import org.shvedchikov.domidzebot.model.House;
 import org.shvedchikov.domidzebot.model.User;
+import org.shvedchikov.domidzebot.repository.DomainRepository;
 import org.shvedchikov.domidzebot.repository.HouseRepository;
 import org.shvedchikov.domidzebot.repository.UserRepository;
 import org.shvedchikov.domidzebot.service.HouseService;
@@ -37,31 +38,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Slf4j
 public class HousesControllerTest {
-
-    @Autowired
-    private HouseService houseService;
 
     @Autowired
     private ObjectMapper om;
 
     @Autowired
     private MockMvc mockMvc;
-
     private static SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
-
     private static User testUser;
-
     private static House testHouse;
+    private static Domain testDomain;
+
 
     @BeforeAll
     public static void init(@Autowired UserRepository userRepository,
                             @Autowired ModelGenerator modelGenerator,
-                            @Autowired HouseRepository houseRepository) {
+                            @Autowired HouseRepository houseRepository,
+                            @Autowired DomainRepository domainRepository) {
 
-                houseRepository.deleteAll();
+        houseRepository.deleteAll();
         userRepository.deleteAll();
+        domainRepository.deleteAll();
 
         token = jwt().jwt(builder -> builder.subject("bot@domidze.ru"));
         testUser = Instancio.of(modelGenerator.getUserModel())
@@ -69,21 +67,29 @@ public class HousesControllerTest {
         testUser.setHouses(List.of());
         userRepository.save(testUser);
 
+        testDomain = Instancio.of(modelGenerator.getDomainModel())
+                .create();
+        testDomain.setHouses(List.of());
+        domainRepository.save(testDomain);
+
         testHouse = new House();
         testHouse.setNumber(new Random().nextInt(1, 1001));
         testHouse.setOwner(testUser);
+        testHouse.setDomain(testDomain);
         houseRepository.save(testHouse);
     }
 
     @AfterAll
     public static void cleanUp(@Autowired UserRepository userRepository,
-                               @Autowired HouseRepository houseRepository) {
+                               @Autowired HouseRepository houseRepository,
+                               @Autowired DomainRepository domainRepository) {
         houseRepository.deleteAll();
         userRepository.deleteAll();
+        domainRepository.deleteAll();
     }
 
     @Test
-    public void test1Show() throws Exception {
+    public void testShow() throws Exception {
         var request = get("/api/houses/{id}", testHouse.getId()).with(jwt());
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -97,7 +103,7 @@ public class HousesControllerTest {
     }
 
     @Test
-    public void test2NotFoundIdInShowMethod() {
+    public void test2NotFoundIdInShowMethod(@Autowired HouseService houseService) {
         final Throwable raisedException = catchThrowable(() -> houseService.show(224020L));
         assertThat(raisedException).isInstanceOf(ResourceNotFoundException.class);
     }
@@ -122,7 +128,7 @@ public class HousesControllerTest {
                     @Autowired ModelGenerator modelGenerator) throws Exception {
         var data = Instancio.of(modelGenerator.getHouseModel()).create();
         data.setOwnerId(testUser.getId());
-
+        data.setDomainId(testDomain.getId());
 
         var request = post("/api/houses")
                 .with(token)

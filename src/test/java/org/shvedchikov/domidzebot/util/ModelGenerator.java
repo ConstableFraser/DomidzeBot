@@ -4,6 +4,7 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Select;
 import org.shvedchikov.domidzebot.dto.house.HouseCreateDTO;
+import org.shvedchikov.domidzebot.model.Domain;
 import org.shvedchikov.domidzebot.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,9 @@ public class ModelGenerator {
     @Getter
     private Model<HouseCreateDTO> houseModel;
 
+    @Getter
+    private Model<Domain> domainModel;
+
     @Autowired
     private Faker faker;
 
@@ -36,6 +40,11 @@ public class ModelGenerator {
         houseModel = Instancio.of(HouseCreateDTO.class)
                 .ignore(Select.field(HouseCreateDTO::getOwnerId))
                 .supply(Select.field(HouseCreateDTO::getNumber), () -> faker.number().numberBetween(1003, 2000))
+                .toModel();
+
+        domainModel = Instancio.of(Domain.class)
+                .ignore(Select.field(Domain::getId))
+                .supply(Select.field(Domain::getDomain), () -> faker.internet().webdomain())
                 .toModel();
     }
 }

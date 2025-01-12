@@ -18,6 +18,10 @@ public class HouseDTO {
     @JsonProperty("owner_id")
     private Long ownerId;
 
+    @NotNull
+    @JsonProperty("domain_id")
+    private Long domainId;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
 
