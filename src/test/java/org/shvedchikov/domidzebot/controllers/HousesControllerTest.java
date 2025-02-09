@@ -212,4 +212,3 @@ public class HousesControllerTest {
         assertThat(houseRepository.findById(id)).isNotPresent();
     }
 }
-
