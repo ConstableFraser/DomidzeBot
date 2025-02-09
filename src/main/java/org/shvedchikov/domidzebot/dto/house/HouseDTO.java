@@ -22,6 +22,10 @@ public class HouseDTO {
     @JsonProperty("domain_id")
     private Long domainId;
 
+    @NotNull
+    @JsonProperty("credential_id")
+    private Long credentialId;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
 

@@ -18,4 +18,8 @@ public class HouseCreateDTO {
     @NotNull
     @JsonProperty("domain_id")
     private Long domainId;
+
+    @NotNull
+    @JsonProperty("credential_id")
+    private Long credentialId;
 }

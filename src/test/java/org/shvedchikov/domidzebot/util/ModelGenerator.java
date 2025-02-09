@@ -4,6 +4,7 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Select;
 import org.shvedchikov.domidzebot.dto.house.HouseCreateDTO;
+import org.shvedchikov.domidzebot.model.Credential;
 import org.shvedchikov.domidzebot.model.Domain;
 import org.shvedchikov.domidzebot.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class ModelGenerator {
     @Getter
     private Model<Domain> domainModel;
 
+    @Getter
+    private Model<Credential> domainCredential;
+
     @Autowired
     private Faker faker;
 
@@ -45,6 +49,12 @@ public class ModelGenerator {
         domainModel = Instancio.of(Domain.class)
                 .ignore(Select.field(Domain::getId))
                 .supply(Select.field(Domain::getDomain), () -> faker.internet().webdomain())
+                .toModel();
+
+        domainCredential = Instancio.of(Credential.class)
+                .ignore(Select.field(Credential::getId))
+                .supply(Select.field(Credential::getLogin), () -> faker.internet().username())
+                .supply(Select.field(Credential::getPassword), () -> faker.hacker().verb())
                 .toModel();
     }
 }

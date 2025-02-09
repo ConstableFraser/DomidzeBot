@@ -6,9 +6,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.shvedchikov.domidzebot.exception.ResourceNotFoundException;
+import org.shvedchikov.domidzebot.model.Credential;
 import org.shvedchikov.domidzebot.model.Domain;
 import org.shvedchikov.domidzebot.model.House;
 import org.shvedchikov.domidzebot.model.User;
+import org.shvedchikov.domidzebot.repository.CredentialRepository;
 import org.shvedchikov.domidzebot.repository.DomainRepository;
 import org.shvedchikov.domidzebot.repository.HouseRepository;
 import org.shvedchikov.domidzebot.repository.UserRepository;
@@ -49,13 +51,15 @@ public class HousesControllerTest {
     private static User testUser;
     private static House testHouse;
     private static Domain testDomain;
+    private static Credential testCredential;
 
 
     @BeforeAll
     public static void init(@Autowired UserRepository userRepository,
                             @Autowired ModelGenerator modelGenerator,
                             @Autowired HouseRepository houseRepository,
-                            @Autowired DomainRepository domainRepository) {
+                            @Autowired DomainRepository domainRepository,
+                            @Autowired CredentialRepository credentialRepository) {
 
         houseRepository.deleteAll();
         userRepository.deleteAll();
@@ -72,20 +76,28 @@ public class HousesControllerTest {
         testDomain.setHouses(List.of());
         domainRepository.save(testDomain);
 
+        testCredential = Instancio.of(modelGenerator.getDomainCredential())
+                .create();
+        testCredential.setHouses(List.of());
+        credentialRepository.save(testCredential);
+
         testHouse = new House();
         testHouse.setNumber(new Random().nextInt(1, 1001));
         testHouse.setOwner(testUser);
         testHouse.setDomain(testDomain);
+        testHouse.setCredential(testCredential);
         houseRepository.save(testHouse);
     }
 
     @AfterAll
     public static void cleanUp(@Autowired UserRepository userRepository,
                                @Autowired HouseRepository houseRepository,
-                               @Autowired DomainRepository domainRepository) {
+                               @Autowired DomainRepository domainRepository,
+                               @Autowired CredentialRepository credentialRepository) {
         houseRepository.deleteAll();
         userRepository.deleteAll();
         domainRepository.deleteAll();
+        credentialRepository.deleteAll();
     }
 
     @Test
@@ -98,7 +110,8 @@ public class HousesControllerTest {
 
         assertThatJson(body).and(
                 v -> v.node("number").isEqualTo(testHouse.getNumber()),
-                v -> v.node("owner_id").isEqualTo(testUser.getId())
+                v -> v.node("owner_id").isEqualTo(testUser.getId()),
+                v -> v.node("credential_id").isEqualTo(testCredential.getId())
         );
     }
 
@@ -129,6 +142,7 @@ public class HousesControllerTest {
         var data = Instancio.of(modelGenerator.getHouseModel()).create();
         data.setOwnerId(testUser.getId());
         data.setDomainId(testDomain.getId());
+        data.setCredentialId(testCredential.getId());
 
         var request = post("/api/houses")
                 .with(token)
@@ -198,3 +212,4 @@ public class HousesControllerTest {
         assertThat(houseRepository.findById(id)).isNotPresent();
     }
 }
+

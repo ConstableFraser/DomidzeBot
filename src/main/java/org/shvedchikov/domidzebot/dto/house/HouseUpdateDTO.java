@@ -1,7 +1,6 @@
 package org.shvedchikov.domidzebot.dto.house;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -14,7 +13,9 @@ public class HouseUpdateDTO {
     @JsonProperty("owner_id")
     private JsonNullable<Long> ownerId;
 
-    @NotNull
     @JsonProperty("domain_id")
-    private Long domainId;
+    private JsonNullable<Long> domainId;
+
+    @JsonProperty("credential_id")
+    private JsonNullable<Long> credentialId;
 }

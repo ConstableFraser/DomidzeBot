@@ -61,6 +61,7 @@ public class UsersControllerTest {
         token = jwt().jwt(builder -> builder.subject("bot@domidze.ru"));
         testUser = Instancio.of(modelGenerator.getUserModel())
                 .create();
+        testUser.setPasswordDigest("qwerty123");
         testUser.setHouses(List.of());
         userRepository.save(testUser);
 
