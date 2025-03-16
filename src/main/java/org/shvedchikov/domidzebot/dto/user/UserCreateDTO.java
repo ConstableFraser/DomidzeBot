@@ -10,6 +10,7 @@ import lombok.Setter;
 public class UserCreateDTO {
     private String firstName;
     private String lastName;
+    private Long userTelegramId;
 
     @Email
     private String email;

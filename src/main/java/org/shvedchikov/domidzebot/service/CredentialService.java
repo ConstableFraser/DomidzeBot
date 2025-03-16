@@ -9,6 +9,7 @@ import org.shvedchikov.domidzebot.mapper.CredentialMapper;
 import org.shvedchikov.domidzebot.repository.CredentialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -36,6 +37,7 @@ public class CredentialService {
         return credentialMapper.map(credential);
     }
 
+    @Transactional
     public CredentialDTO update(@RequestBody CredentialUpdateDTO credentialData, @PathVariable Long id) {
         var credential = credentialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Credential with id: " + id + " not found"));
@@ -51,6 +53,7 @@ public class CredentialService {
         return credentialMapper.map(credential);
     }
 
+    @Transactional
     public void destroy(@PathVariable Long id) {
         credentialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Credential with id: " + id + " not found"));

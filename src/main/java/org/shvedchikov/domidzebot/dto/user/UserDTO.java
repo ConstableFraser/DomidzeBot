@@ -10,9 +10,11 @@ import java.util.Date;
 @Setter
 public class UserDTO {
     private Long id;
+    private Long userTelegramId;
     private String email;
     private String firstName;
     private String lastName;
+    private boolean isEnable;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;

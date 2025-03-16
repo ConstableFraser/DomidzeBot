@@ -123,6 +123,7 @@ public class CredentialsControllerTest {
 
         assertThat(credential.isPresent()).isTrue();
         assertThat(credential.get().getLogin()).isEqualTo(data.getLogin());
+        assertThat(credential.get().getPassword()).isNotEqualTo(data.getPassword());
     }
 
     @Test

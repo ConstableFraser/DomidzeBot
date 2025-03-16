@@ -10,6 +10,7 @@ import org.shvedchikov.domidzebot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,6 +32,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional
     public UserDTO create(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         var user = userMapper.map(userCreateDTO);
         userRepository.save(user);
@@ -38,6 +40,7 @@ public class UserService {
         return userMapper.map(user);
     }
 
+    @Transactional
     @PreAuthorize("@userUtils.isCurrentUser(#id)")
     public UserDTO update(@RequestBody UserUpdateDTO userData, @PathVariable Long id) {
         var user = userRepository.findById(id)
@@ -54,6 +57,7 @@ public class UserService {
         return userMapper.map(user);
     }
 
+    @Transactional
     @PreAuthorize("@userUtils.isCurrentUser(#id)")
     public void destroy(@PathVariable Long id) {
         userRepository.findById(id)

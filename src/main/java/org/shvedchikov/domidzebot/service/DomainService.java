@@ -9,6 +9,7 @@ import org.shvedchikov.domidzebot.mapper.DomainMapper;
 import org.shvedchikov.domidzebot.repository.DomainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -29,6 +30,7 @@ public class DomainService {
                 .toList();
     }
 
+    @Transactional
     public DomainDTO create(@Valid @RequestBody DomainCreateDTO domainCreateDTO) {
         var domain = domainMapper.map(domainCreateDTO);
         domainRepository.save(domain);
@@ -36,6 +38,7 @@ public class DomainService {
         return domainMapper.map(domain);
     }
 
+    @Transactional
     public DomainDTO update(@RequestBody DomainUpdateDTO domainUpdateDTO, @PathVariable Long id) {
         var domain = domainRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Domain with id: " + id + " not found"));
@@ -51,6 +54,7 @@ public class DomainService {
         return domainMapper.map(domain);
     }
 
+    @Transactional
     public void destroy(@PathVariable Long id) {
         domainRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Domain with id: " + id + " not found"));

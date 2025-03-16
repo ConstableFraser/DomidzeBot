@@ -43,6 +43,10 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Column(unique = true)
+    @EqualsAndHashCode.Include
+    private Long userTelegramId;
+
     @NotNull
     @Column(unique = true)
     @Email
@@ -58,6 +62,10 @@ public class User implements UserDetails {
     @NotNull
     @Size(min = 3)
     private String passwordDigest;
+
+    @NotNull
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean isEnable;
 
     @LastModifiedDate
     private LocalDate updatedAt;
@@ -97,7 +105,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return isEnable;
     }
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -33,7 +33,7 @@ public class CodingDecodingTest {
 
         source = "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet";
         codedString = encodeString(source);
-        assertThat(source).isEqualTo(decodeString(codedString));
+        assertThat(source).isEqualTo(decodeString(codedString)); //TODO
     }
 
     @Test

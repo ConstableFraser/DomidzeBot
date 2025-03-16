@@ -34,14 +34,13 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class Domain {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @ToString.Include
     @EqualsAndHashCode.Include
     private Long id;
 
     @Column(unique = true)
     @NotNull
     @Size(min = 2, message = "{size domain name too short}")
-    @Size(max = 100, message = "{size domain name too long}")
+    @Size(max = 100, message = "{size domain name is too long}")
     @ToString.Include
     private String domain;
 

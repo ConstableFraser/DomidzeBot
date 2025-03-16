@@ -26,7 +26,6 @@ public abstract class CredentialMapper {
 
     public abstract CredentialDTO map(Credential model);
 
-    //@Mapping(target = "login", source = "login")
     public abstract void update(CredentialUpdateDTO update, @MappingTarget Credential destination);
 
     @BeforeMapping

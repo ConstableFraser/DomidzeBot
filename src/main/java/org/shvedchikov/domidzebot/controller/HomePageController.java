@@ -20,9 +20,10 @@ public class HomePageController {
 
     @GetMapping(path = "/welcome")
     public String welcome() {
-        return ":: Welcome to "
-                + name + "!"
-                + "<br>version: " + version;
+        return "\uD83C\uDFE0 Welcome to "
+                + name + "! \uD83C\uDFE0"
+                + "<div><a href=\"https://www.t.me/" + name + "\">" + "@" + name + "</a></div>"
+                + "<br><br>version: " + version;
     }
 
     @GetMapping("/")

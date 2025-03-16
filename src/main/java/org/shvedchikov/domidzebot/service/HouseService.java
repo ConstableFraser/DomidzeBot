@@ -9,6 +9,7 @@ import org.shvedchikov.domidzebot.mapper.HouseMapper;
 import org.shvedchikov.domidzebot.repository.HouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,6 +32,7 @@ public class HouseService {
                 .toList();
     }
 
+    @Transactional
     public HouseDTO create(@Valid @RequestBody HouseCreateDTO houseCreateDTO) {
         var house = houseMapper.map(houseCreateDTO);
         houseRepository.save(house);
@@ -38,6 +40,7 @@ public class HouseService {
         return houseMapper.map(house);
     }
 
+    @Transactional
     public HouseDTO update(@RequestBody HouseUpdateDTO houseUpdateDTO, @PathVariable Long id) {
         var house = houseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("House with id: " + id + " not found"));
@@ -66,6 +69,7 @@ public class HouseService {
                 .toList();
     }
 
+    @Transactional
     public void destroy(@PathVariable Long id) {
         houseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("House with id: " + id + " not found"));
