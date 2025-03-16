@@ -46,6 +46,10 @@ jobs:
 
       - name: Run tests
         run: ./gradlew test
+        env:
+          HASH: ${{ secrets.HASH }}
+          BOTNAME: ${{ vars.BOTNAME }}
+          BOTTOKEN: ${{ secrets.BOTTOKEN }}
 
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
