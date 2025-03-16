@@ -45,10 +45,10 @@ jobs:
           arguments: build
 
       - name: Run tests
-        env:
-          BOTNAME: ${{vars.BOTNAME}}
-          BOTTOKEN: ${{secrets.BOTTOKEN}}
         run: ./gradlew test
+        env:
+          BOTNAME: ${{ vars.BOTNAME }}
+          BOTTOKEN: ${{ secrets.BOTTOKEN }}
 
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
