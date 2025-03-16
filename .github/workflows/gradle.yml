@@ -47,6 +47,7 @@ jobs:
       - name: Run tests
         run: ./gradlew test
         env:
+          HASH: ${{ secrets.HASH }}
           BOTNAME: ${{ vars.BOTNAME }}
           BOTTOKEN: ${{ secrets.BOTTOKEN }}
 
