@@ -45,6 +45,9 @@ jobs:
           arguments: build
 
       - name: Run tests
+        env:
+          BOTNAME: ${{vars.BOTNAME}}
+          BOTTOKEN: ${{secrets.BOTTOKEN}}
         run: ./gradlew test
 
       - name: Publish code coverage
