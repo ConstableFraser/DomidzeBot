@@ -39,8 +39,6 @@ jobs:
           POSTGRESQL_DBNAME: ${{vars.POSTGRESQL_DBNAME}}
           POSTGRESQL_USER: ${{vars.POSTGRESQL_USER}}
           POSTGRESQL_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
-          BOTNAME: ${{vars.BOTNAME}}
-          BOTTOKEN: ${{secrets.BOTTOKEN}}
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 8.11.1
@@ -52,6 +50,8 @@ jobs:
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         env:
+          BOTNAME: ${{vars.BOTNAME}}
+          BOTTOKEN: ${{secrets.BOTTOKEN}}
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
           JACOCO_SOURCE_PATH: src/main/java
         with:
