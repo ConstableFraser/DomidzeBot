@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(locations="classpath:application.properties")
+@TestPropertySource(locations = "classpath:/../../main/resources/application.properties")
 public class DomainsControllerTest {
     private static SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
     private static Domain testDomain;
