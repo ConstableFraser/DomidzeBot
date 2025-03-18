@@ -50,12 +50,12 @@ jobs:
           HASH: ${{ secrets.HASH }}
           BOTNAME: ${{ vars.BOTNAME }}
           BOTTOKEN: ${{ secrets.BOTTOKEN }}
+          LOGFILENAME: ${{ vars.LOGFILENAME}}
+          LOGFILEPATH: ${{ vars.LOGFILEPATH }}
 
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         env:
-          BOTNAME: ${{vars.BOTNAME}}
-          BOTTOKEN: ${{secrets.BOTTOKEN}}
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
           JACOCO_SOURCE_PATH: src/main/java
         with:
