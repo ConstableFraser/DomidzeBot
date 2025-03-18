@@ -27,11 +27,11 @@ public class CodingDecodingTest {
     public void testCodeDecodeStringVariations() {
         var source = "1";
 
-        var codedString = CoderDecoder.encodeString(source);
+        var codedString = encodeString(source);
         assertThat(source).isEqualTo(decodeString(codedString));
 
         source = "";
-        codedString = CoderDecoder.encodeString(source);
+        codedString = encodeString(source);
         assertThat(codedString).isEqualTo("");
         assertThat(source).isEqualTo(decodeString(codedString));
 
