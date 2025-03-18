@@ -7,11 +7,13 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-import static org.shvedchikov.domidzebot.util.CoderDecoder.getCoderDecoder;
+
+import org.shvedchikov.domidzebot.component.CoderDecoder;
 import org.shvedchikov.domidzebot.dto.credential.CredentialCreateDTO;
 import org.shvedchikov.domidzebot.dto.credential.CredentialDTO;
 import org.shvedchikov.domidzebot.dto.credential.CredentialUpdateDTO;
 import org.shvedchikov.domidzebot.model.Credential;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(
         uses = {JsonNullableMapper.class, ReferenceMapper.class},
@@ -20,6 +22,8 @@ import org.shvedchikov.domidzebot.model.Credential;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public abstract class CredentialMapper {
+    @Autowired
+    private CoderDecoder coderDecoder;
 
     @Mapping(target = "password", source = "password")
     public abstract Credential map(CredentialCreateDTO model);
@@ -32,7 +36,7 @@ public abstract class CredentialMapper {
     public void encryptPassword(CredentialCreateDTO data) {
         var password = data.getPassword();
         try {
-            data.setPassword(getCoderDecoder().encodePwd(password));
+            data.setPassword(coderDecoder.encodePwd(password));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -42,7 +46,7 @@ public abstract class CredentialMapper {
     public void decryptPassword(Credential data) {
         var password = data.getPassword();
         try {
-            data.setPassword(getCoderDecoder().decodePwd(password));
+            data.setPassword(coderDecoder.decodePwd(password));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

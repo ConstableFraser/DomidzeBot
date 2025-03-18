@@ -5,6 +5,7 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.shvedchikov.domidzebot.component.CoderDecoder;
 import org.shvedchikov.domidzebot.exception.ResourceNotFoundException;
 import org.shvedchikov.domidzebot.model.Credential;
 import org.shvedchikov.domidzebot.repository.CredentialRepository;
@@ -23,7 +24,6 @@ import java.util.List;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.shvedchikov.domidzebot.util.CoderDecoder.getCoderDecoder;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,9 +43,13 @@ public class CredentialsControllerTest {
     @Autowired
     private ObjectMapper om;
 
+    @Autowired
+    private CoderDecoder coderDecoder;
+
     @BeforeAll
     public static void init(@Autowired ModelGenerator modelGenerator,
-                            @Autowired CredentialRepository credentialRepository) {
+                            @Autowired CredentialRepository credentialRepository,
+                            @Autowired CoderDecoder coderDecoder) {
 
         credentialRepository.deleteAll();
 
@@ -54,7 +58,7 @@ public class CredentialsControllerTest {
                 .create();
         testCredential.setHouses(List.of());
         try {
-            testCredential.setPassword(getCoderDecoder().encodePwd(testCredential.getPassword()));
+            testCredential.setPassword(coderDecoder.encodePwd(testCredential.getPassword()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -78,7 +82,7 @@ public class CredentialsControllerTest {
                 v -> v.node("login").isEqualTo(testCredential.getLogin()),
                 v -> {
                     try {
-                        v.node("password").isEqualTo(getCoderDecoder().decodePwd(testCredential.getPassword()));
+                        v.node("password").isEqualTo(coderDecoder.decodePwd(testCredential.getPassword()));
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -95,7 +99,7 @@ public class CredentialsControllerTest {
     public void testIndex(@Autowired CredentialRepository credentialRepository) throws Exception {
         var newCredential = new Credential();
         newCredential.setLogin("Volfmess");
-        newCredential.setPassword(getCoderDecoder().encodePwd("921WW()@$@**"));
+        newCredential.setPassword(coderDecoder.encodePwd("921WW()@$@**"));
         credentialRepository.save(newCredential);
 
         var result = mockMvc.perform(get("/api/credentials").with(jwt()))

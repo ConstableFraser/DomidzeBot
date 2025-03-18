@@ -6,7 +6,7 @@ import org.shvedchikov.domidzebot.dto.house.HouseCreateDTO;
 import org.shvedchikov.domidzebot.dto.user.UserCreateDTO;
 import org.shvedchikov.domidzebot.model.Domain;
 import org.shvedchikov.domidzebot.repository.DomainRepository;
-import org.shvedchikov.domidzebot.util.CoderDecoder;
+import org.shvedchikov.domidzebot.component.CoderDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

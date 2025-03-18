@@ -1,28 +1,27 @@
-package org.shvedchikov.domidzebot.util;
+package org.shvedchikov.domidzebot.component;
+
+import org.shvedchikov.domidzebot.config.AppProperties;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
-import static java.lang.System.getProperty;
-
+@Component
 public final class CoderDecoder {
     private static final int DELTA = 48;
-    private static String property;
+    private final String hash;
 
-    private CoderDecoder() throws Exception {
-        property = getProperty("pwdprop", "");
-        if (property.isEmpty()) {
-            throw new Exception("Property 'pwdprop' is not found");
+    public CoderDecoder(AppProperties app) throws Exception {
+        if (Objects.isNull(app.getHash())) {
+            throw new Exception("Property 'hash' is not found");
         }
-    }
-
-    public static CoderDecoder getCoderDecoder() throws Exception {
-        return new CoderDecoder();
+        hash = app.getHash();
     }
 
     public String encodePwd(String sourcePwd) {
         byte[] password = Base64.getDecoder().decode(encodeString(sourcePwd));
-        byte[] prop = Base64.getDecoder().decode(property);
+        byte[] prop = Base64.getDecoder().decode(hash);
 
         byte[] result = new byte[prop.length + 1];
 
@@ -37,7 +36,7 @@ public final class CoderDecoder {
 
     public String decodePwd(String encodedPwd) {
         byte[] password = Base64.getDecoder().decode(encodedPwd);
-        byte[] prop = Base64.getDecoder().decode(property);
+        byte[] prop = Base64.getDecoder().decode(hash);
 
         int pwdSize = password[password.length - 1] ^ prop[0];
         byte[] result = new byte[pwdSize];
@@ -48,7 +47,6 @@ public final class CoderDecoder {
 
         return decodeString(Base64.getEncoder().encodeToString(result));
     }
-
 
     public static String encodeString(String pwd) {
         if (pwd == null) {

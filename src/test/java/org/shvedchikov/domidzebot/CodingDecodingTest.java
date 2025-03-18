@@ -1,16 +1,20 @@
 package org.shvedchikov.domidzebot;
 
 import org.junit.jupiter.api.Test;
-import org.shvedchikov.domidzebot.util.CoderDecoder;
+import org.shvedchikov.domidzebot.component.CoderDecoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.shvedchikov.domidzebot.util.CoderDecoder.encodeString;
-import static org.shvedchikov.domidzebot.util.CoderDecoder.decodeString;
+import static org.shvedchikov.domidzebot.component.CoderDecoder.encodeString;
+import static org.shvedchikov.domidzebot.component.CoderDecoder.decodeString;
 
 
 @SpringBootTest
 public class CodingDecodingTest {
+    @Autowired
+    private CoderDecoder coderDecoder;
+
     @Test
     public void testCodeDecodeString() {
         var source = "this is are string";
@@ -33,7 +37,7 @@ public class CodingDecodingTest {
 
         source = "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet";
         codedString = encodeString(source);
-        assertThat(source).isEqualTo(decodeString(codedString)); //TODO
+        assertThat(source).isEqualTo(decodeString(codedString));
     }
 
     @Test
@@ -43,13 +47,13 @@ public class CodingDecodingTest {
         String result;
 
         try {
-            encodedPwd = CoderDecoder.getCoderDecoder().encodePwd(encodeString(sourcePwd));
+            encodedPwd = coderDecoder.encodePwd(encodeString(sourcePwd));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         try {
-            result = decodeString(CoderDecoder.getCoderDecoder().decodePwd(encodedPwd));
+            result = decodeString(coderDecoder.decodePwd(encodedPwd));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
