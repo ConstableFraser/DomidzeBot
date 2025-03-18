@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.shvedchikov.domidzebot.component.CoderDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.shvedchikov.domidzebot.component.CoderDecoder.encodeString;
@@ -11,6 +12,7 @@ import static org.shvedchikov.domidzebot.component.CoderDecoder.decodeString;
 
 
 @SpringBootTest
+@ActiveProfiles("production")
 public class CodingDecodingTest {
     @Autowired
     private CoderDecoder coderDecoder;
