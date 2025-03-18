@@ -53,12 +53,6 @@ jobs:
           LOGFILENAME: ${{ vars.LOGFILENAME}}
           LOGFILEPATH: ${{ vars.LOGFILEPATH }}
 
-      - name: Upload result for run tests
-        uses: actions/upload-artifact@v4
-        with:
-          name: log-stack
-          path: log-stack-file.txt
-          
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         env:
