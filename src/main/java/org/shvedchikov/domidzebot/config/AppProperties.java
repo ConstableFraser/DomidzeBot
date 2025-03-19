@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Data
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource(value = "file:///home/runner/work/DomidzeBot/DomidzeBot/src/test/resources/application.properties")
 public class AppProperties {
     @Value(value = "${appproperties.hash}")
     private String hash;
