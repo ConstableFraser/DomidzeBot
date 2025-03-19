@@ -12,6 +12,6 @@ public class BotConfig {
     @Value(value = "${bot.name}")
     private String name;
 
-    @Value(value = "${bot.token:2356546:WGWGWGHWHWRHWHWH}")
+    @Value(value = "${bot.token}")
     private String token;
 }
