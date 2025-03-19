@@ -12,7 +12,8 @@ import static org.shvedchikov.domidzebot.component.CoderDecoder.decodeString;
 
 
 @SpringBootTest
-@TestPropertySource(properties = "appproperties.hash=djM7MT82MzYxgkA9iYtLdzeFSESCpzCuOptoS0mLMjKRT1dLRTEwUDBINk5rSzVFQDVFP4kzNjE9OTM2MTQzlUg2M001RT42SFE=")
+@TestPropertySource(
+    properties = "appproperties.hash=djM7MT82MzYxgkA9iYtLdzeFSESCpzCuOptoS0mLMjKRT1dLRTEwUDBINk5rSzVFQDVFP4kzNjE9OTM2MTQzlUg2M001RT42SFE=")
 public class CodingDecodingTest {
     @Autowired
     private CoderDecoder coderDecoder;
