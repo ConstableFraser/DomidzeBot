@@ -12,7 +12,8 @@ import static org.shvedchikov.domidzebot.component.CoderDecoder.decodeString;
 
 
 @SpringBootTest
-@TestPropertySource(locations = "file://home/runner/work/DomidzeBot/DomidzeBot/src/main/resources/application.properties")
+@TestPropertySource(locations = "file:///home/runner/work/DomidzeBot/DomidzeBot/" +
+        "src/main/resources/application.properties")
 public class CodingDecodingTest {
     @Autowired
     private CoderDecoder coderDecoder;
