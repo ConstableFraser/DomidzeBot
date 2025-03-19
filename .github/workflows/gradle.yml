@@ -33,16 +33,10 @@ jobs:
           java-version: '19'
           distribution: 'corretto'
       - name: Build with Gradle
-        env:
-          POSTGRESQL_HOST: ${{ vars.POSTGRESQL_HOST }}
-          POSTGRESQL_PORT: ${{ vars.POSTGRESQL_PORT }}
-          POSTGRESQL_DBNAME: ${{ vars.POSTGRESQL_DBNAME }}
-          POSTGRESQL_USER: ${{ vars.POSTGRESQL_USER }}
-          POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 8.11.1
-          arguments: build
+          arguments: build -x test
           
       - name: Run tests
         run: ./gradlew test -Dspring.profiles.active=test
@@ -52,6 +46,11 @@ jobs:
           BOTTOKEN: ${{ secrets.BOTTOKEN }}
           LOGFILENAME: ${{ vars.LOGFILENAME }}
           LOGFILEPATH: ${{ vars.LOGFILEPATH }}
+          POSTGRESQL_HOST: ${{ vars.POSTGRESQL_HOST }}
+          POSTGRESQL_PORT: ${{ vars.POSTGRESQL_PORT }}
+          POSTGRESQL_DBNAME: ${{ vars.POSTGRESQL_DBNAME }}
+          POSTGRESQL_USER: ${{ vars.POSTGRESQL_USER }}
+          POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
 
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
