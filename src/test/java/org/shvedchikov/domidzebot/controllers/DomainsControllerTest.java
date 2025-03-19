@@ -1,4 +1,4 @@
-/*package org.shvedchikov.domidzebot.controllers;
+package org.shvedchikov.domidzebot.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.instancio.Instancio;
@@ -149,4 +149,3 @@ public class DomainsControllerTest {
         assertThat(domain.getDomain()).isEqualTo(data.get("domain"));
     }
 }
-*/
