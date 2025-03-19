@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Data
 @Configuration
-@PropertySource("file:///src/main/test/resources/application-test.properties")
+@PropertySource("classpath:application.properties")
 public class BotConfig {
     @Value(value = "${bot.name}")
     private String name;
