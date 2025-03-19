@@ -34,8 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "file:///home/runner/work/DomidzeBot/DomidzeBot/"
-        + "src/test/resources/application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class CredentialsControllerTest {
     private static SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
     private static Credential testCredential;

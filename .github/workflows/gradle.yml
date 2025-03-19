@@ -55,7 +55,7 @@ jobs:
           BOTTOKEN: ${{ secrets.BOTTOKEN }}
           LOGFILENAME: ${{ vars.LOGFILENAME}}
           LOGFILEPATH: ${{ vars.LOGFILEPATH }}
-          APP_CONFIG_PATH: ${{ github.workspace }}/application-test.properties
+          APP_CONFIG_PATH: ${{ github.workspace }}/src/test/resources/application-test.properties
 
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0

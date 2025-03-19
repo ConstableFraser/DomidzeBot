@@ -41,8 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "file:///home/runner/work/DomidzeBot/DomidzeBot/"
-        + "src/test/resources/application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class HousesControllerTest {
 
     @Autowired
