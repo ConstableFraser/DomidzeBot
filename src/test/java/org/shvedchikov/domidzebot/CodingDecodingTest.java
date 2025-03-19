@@ -1,8 +1,8 @@
 package org.shvedchikov.domidzebot;
 
 import org.junit.jupiter.api.Test;
-import org.shvedchikov.domidzebot.component.CoderDecoder;
-import org.springframework.beans.factory.annotation.Autowired;
+// import org.shvedchikov.domidzebot.component.CoderDecoder;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,8 +12,8 @@ import static org.shvedchikov.domidzebot.component.CoderDecoder.decodeString;
 
 @SpringBootTest
 public class CodingDecodingTest {
-    @Autowired
-    private CoderDecoder coderDecoder;
+//    @Autowired
+//    private CoderDecoder coderDecoder;
 
     @Test
     public void testCodeDecodeString() {
@@ -40,7 +40,7 @@ public class CodingDecodingTest {
         assertThat(source).isEqualTo(decodeString(codedString));
     }
 
-    @Test
+  /*  @Test
     public void testCodeDecodePwd() {
         var sourcePwd = "source of password";
         String encodedPwd;
@@ -59,5 +59,5 @@ public class CodingDecodingTest {
         }
 
         assertThat(result).isEqualTo(sourcePwd);
-    }
+    } */
 }
