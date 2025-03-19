@@ -12,9 +12,9 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          POSTGRES_DB: ${{vars.POSTGRESQL_DBNAME}}
-          POSTGRES_USER: ${{vars.POSTGRESQL_USER}}
-          POSTGRES_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
+          POSTGRES_DB: ${{ vars.POSTGRESQL_DBNAME }}
+          POSTGRES_USER: ${{ vars.POSTGRESQL_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
         ports:
           - 5432:5432
         options: >-
@@ -24,9 +24,6 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: Print working directory
-        run: echo ${{ github.workspace }}
-    
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -37,31 +34,30 @@ jobs:
           distribution: 'corretto'
       - name: Build with Gradle
         env:
-          POSTGRESQL_HOST: ${{vars.POSTGRESQL_HOST}}
-          POSTGRESQL_PORT: ${{vars.POSTGRESQL_PORT}}
-          POSTGRESQL_DBNAME: ${{vars.POSTGRESQL_DBNAME}}
-          POSTGRESQL_USER: ${{vars.POSTGRESQL_USER}}
-          POSTGRESQL_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
+          POSTGRESQL_HOST: ${{ vars.POSTGRESQL_HOST }}
+          POSTGRESQL_PORT: ${{ vars.POSTGRESQL_PORT }}
+          POSTGRESQL_DBNAME: ${{ vars.POSTGRESQL_DBNAME }}
+          POSTGRESQL_USER: ${{ vars.POSTGRESQL_USER }}
+          POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 8.11.1
           arguments: build
           
       - name: Run tests
-        run: ./gradlew test -Dconfig.file=$APP_CONFIG_PATH
+        run: ./gradlew test
         env:
           HASH: ${{ secrets.HASH }}
           BOTNAME: ${{ vars.BOTNAME }}
           BOTTOKEN: ${{ secrets.BOTTOKEN }}
-          LOGFILENAME: ${{ vars.LOGFILENAME}}
+          LOGFILENAME: ${{ vars.LOGFILENAME }}
           LOGFILEPATH: ${{ vars.LOGFILEPATH }}
-          APP_CONFIG_PATH: ${{ github.workspace }}/src/test/resources/application-test.properties
 
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         env:
-          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           JACOCO_SOURCE_PATH: src/main/java
         with:
           coverageCommand: ./gradlew jacocoTestReport
-          coverageLocations: ${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
+          coverageLocations: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
