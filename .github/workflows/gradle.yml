@@ -39,7 +39,7 @@ jobs:
           arguments: build -x test
           
       - name: Run tests
-        run: ./gradlew test -Dspring.profiles.active=test
+        run: ./gradlew test
         env:
           HASH: ${{ secrets.HASH }}
           BOTNAME: ${{ vars.BOTNAME }}
