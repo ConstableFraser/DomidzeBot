@@ -9,9 +9,9 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource(value = "file:///home/runner/work/DomidzeBot/DomidzeBot/src/test/resources/application.properties")
 public class BotConfig {
-    @Value(value = "${bot.name}")
-    private String name = "testnamebot";
+    @Value(value = "${bot.name:default}")
+    private String name;
 
-    @Value(value = "${bot.token}")
-    private String token = "very secret API token";
+    @Value(value = "${bot.token:default}")
+    private String token;
 }
