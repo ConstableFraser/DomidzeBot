@@ -9,6 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource(value = "classpath:application.properties")
 public class AppProperties {
-    @Value(value = "${appproperties.hash}")
+    @Value(value = "${appproperties.hash:4kzNjE9OTM2MTQzlUg2M001RT42SFE=}")
     private String hash;
 }
