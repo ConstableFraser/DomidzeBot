@@ -64,6 +64,7 @@ public class HousesControllerTest {
         houseRepository.deleteAll();
         userRepository.deleteAll();
         domainRepository.deleteAll();
+        credentialRepository.deleteAll();
 
         token = jwt().jwt(builder -> builder.subject("bot@domidze.ru"));
         testUser = Instancio.of(modelGenerator.getUserModel())
