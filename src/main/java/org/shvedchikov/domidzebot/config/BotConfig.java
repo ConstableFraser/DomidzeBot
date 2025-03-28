@@ -9,12 +9,12 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource(value = "classpath:${PATHPROPERTY:}application.properties")
 public class BotConfig {
-    @Value(value = "${bot.name:}")
+    @Value(value = "${bot.name}")
     private String name;
 
-    @Value(value = "${bot.token:}")
+    @Value(value = "${bot.token}")
     private String token;
 
-    @Value(value = "${bot.admin:}")
+    @Value(value = "${bot.admin}")
     private Long idAdmin;
 }

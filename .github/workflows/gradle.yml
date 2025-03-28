@@ -43,6 +43,7 @@ jobs:
         env:
           HASH: ${{ secrets.HASH }}
           BOTNAME: ${{ vars.BOTNAME }}
+          BOTADMIN: ${{ vars.BOTADMIN }}
           BOTTOKEN: ${{ secrets.BOTTOKEN }}
           LOGFILENAME: ${{ vars.LOGFILENAME }}
           LOGFILEPATH: ${{ vars.LOGFILEPATH }}
