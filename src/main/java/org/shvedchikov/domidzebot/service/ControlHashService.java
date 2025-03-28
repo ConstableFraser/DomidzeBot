@@ -2,21 +2,17 @@ package org.shvedchikov.domidzebot.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.shvedchikov.domidzebot.component.CoderDecoder;
-import org.shvedchikov.domidzebot.config.BotConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
-import java.util.Objects;
 
 @Slf4j
 @Service
 public class ControlHashService {
     private TelegramBotService telegramBotService;
 
-    @Autowired
-    private BotConfig botConfig;
+//    @Autowired
+//    private BotConfig botConfig;
 
     protected void setTelegramBot(TelegramBotService telegramBotService) {
         this.telegramBotService = telegramBotService;
@@ -65,6 +61,7 @@ public class ControlHashService {
     }
 
     private boolean isAdmin(Long idCurrent) {
-        return !Objects.equals(botConfig.getIdAdmin(), idCurrent);
+        return true;
+        //return !Objects.equals(botConfig.getIdAdmin(), idCurrent);
     }
 }
