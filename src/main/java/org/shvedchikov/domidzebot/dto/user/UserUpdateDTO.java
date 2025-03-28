@@ -24,4 +24,7 @@ public class UserUpdateDTO {
     @NotBlank
     @Size(min = 3)
     private JsonNullable<String> password;
+
+    @NotBlank
+    private JsonNullable<Boolean> isEnable;
 }

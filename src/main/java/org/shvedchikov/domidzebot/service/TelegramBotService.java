@@ -8,6 +8,8 @@ import org.shvedchikov.domidzebot.component.TelegramBot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -37,11 +39,19 @@ public class TelegramBotService {
         FINISHEDREGISTER,
         ACCEPTUSER,
         REJECTUSER,
+        ACTIVATE,
+        HASH,
         DEFAULT
     }
 
     @Autowired
     private RegisterUserBotService registerUserBotService;
+
+    @Autowired
+    private ActivateUserService activateUserService;
+
+    @Autowired
+    private ControlHashService controlHashService;
 
     private static final String START_TEXT = """
             [СЕРВИС УВЕДОМЛЕНИЙ О БРОНИРОВАНИЯХ]
@@ -70,6 +80,8 @@ public class TelegramBotService {
     @PostConstruct
     private void setTelegramService() {
         registerUserBotService.setTelegramBot(this);
+        activateUserService.setTelegramBot(this);
+        controlHashService.setTelegramBot(this);
         mapFunc.put(Status.NAME, registerUserBotService::getName);
         mapFunc.put(Status.LASTNAME, registerUserBotService::getLastName);
         mapFunc.put(Status.EMAIL, registerUserBotService::getEmail);
@@ -80,6 +92,20 @@ public class TelegramBotService {
         mapFunc.put(Status.FINISHEDREGISTER, registerUserBotService::startCompleteRegister);
         mapFunc.put(Status.ACCEPTUSER, registerUserBotService::onAccept);
         mapFunc.put(Status.REJECTUSER, registerUserBotService::onReject);
+        mapFunc.put(Status.ACTIVATE, activateUserService::setUserById);
+        mapFunc.put(Status.HASH, controlHashService::setHash);
+    }
+
+    public void onSetHash(Update update) {
+        controlHashService.promptHash(update);
+    }
+
+    public void onGetHash(Update update) {
+        controlHashService.getHash(update);
+    }
+
+    public void onActiveUser(Update update) {
+        activateUserService.getUserById(update);
     }
 
     public void setTelegramBot(TelegramBot telegramBot) {
@@ -98,9 +124,9 @@ public class TelegramBotService {
         sendMessage(chatId, HELP_TEXT);
     }
 
-    public void onRegisterActionDoing(Long chatId) {
+    public void onRegisterActionDoing(Update update) {
         status = Status.DEFAULT;
-        registerUserBotService.welcomeToRegister(chatId);
+        registerUserBotService.welcomeToRegister(update);
     }
 
     public void onUnknownActionDoing(Update update) {
@@ -129,9 +155,25 @@ public class TelegramBotService {
         ).apply(update);
     }
 
-    public void sendMessage(SendMessage sendMessage) {
+    public int sendMessage(SendMessage sendMessage) {
         try {
-            telegramBot.execute(sendMessage);
+            return telegramBot.execute(sendMessage).getMessageId();
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendMessage(EditMessageText editMessageText) {
+        try {
+            telegramBot.execute(editMessageText);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendMessage(DeleteMessage deleteMessageText) {
+        try {
+            telegramBot.execute(deleteMessageText);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }

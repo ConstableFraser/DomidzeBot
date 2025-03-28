@@ -7,9 +7,12 @@ import org.shvedchikov.domidzebot.dto.user.UserCreateDTO;
 import org.shvedchikov.domidzebot.model.Domain;
 import org.shvedchikov.domidzebot.repository.DomainRepository;
 import org.shvedchikov.domidzebot.component.CoderDecoder;
+import org.shvedchikov.domidzebot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.LinkedHashMap;
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 @Service
@@ -59,14 +63,22 @@ public class RegisterUserBotService {
 
     private TelegramBotService telegramBotService;
     private final SendMessage sendMessage = new SendMessage();
+    private final EditMessageText editMessageText = new EditMessageText();
+    private int sentMessage;
     private UserCreateDTO userCreateDTO = new UserCreateDTO();
     private HouseCreateDTO houseCreateDTO = new HouseCreateDTO();
     private CredentialCreateDTO credentialCreateDTO = new CredentialCreateDTO();
     private Domain domain = new Domain();
     private List<Domain> domains;
+    private long chatId;
+    private long tgId;
 
     @Autowired
     private DomainRepository domainRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Autowired
     private KeyboardBotService keyboardBotService;
@@ -84,11 +96,24 @@ public class RegisterUserBotService {
         this.telegramBotService = telegramBotService;
     }
 
-    public void welcomeToRegister(Long chatId) {
+    public void welcomeToRegister(Update update) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            chatId = update.getMessage().getChatId();
+            tgId = update.getMessage().getFrom().getId();
+        } else {
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+            tgId = update.getCallbackQuery().getFrom().getId();
+        }
         sendMessage.setChatId(chatId);
+        if (userRepository.findByUserTelegramId(tgId).isPresent()) {
+            sendMessage.setReplyMarkup(keyboardBotService.createKeyboard());
+            sendMessage.setText("Вы уже зарегистрированы");
+            sentMessage = telegramBotService.sendMessage(sendMessage);
+            return;
+        }
         sendMessage.setText(REG_TEXT);
         sendMessage.setReplyMarkup(keyboardBotService.createKeyboard(buttonsRegister));
-        telegramBotService.sendMessage(sendMessage);
+        sentMessage = telegramBotService.sendMessage(sendMessage);
     }
 
     protected Status getName(Update update) {
@@ -123,8 +148,19 @@ public class RegisterUserBotService {
         return Status.EMAIL;
     }
 
-    protected Status setEmail(Update update) {
-        //TODO verify the email
+    protected Status setEmail(Update update) { // TODO [400] Bad Request
+        var emailregex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        var pattern = Pattern.compile(emailregex);
+        var email = update.getMessage().getText();
+
+        if (email.isEmpty() || !pattern.matcher(email).matches()) {
+            DeleteMessage deleteMessage = new DeleteMessage();
+            deleteMessage.setChatId(chatId);
+            deleteMessage.setMessageId(update.getMessage().getMessageId());
+            telegramBotService.sendMessage(deleteMessage);
+            getEmail(update);
+            return Status.EMAIL;
+        }
         telegramBotService.setStatus(Status.EMAIL);
         userCreateDTO.setEmail(update.getMessage().getText());
         setter(update, this::getEmail, "Email сохранён. Нажмите \"4. номер дома\"");
@@ -148,7 +184,7 @@ public class RegisterUserBotService {
         telegramBotService.setStatus(Status.DOMAIN);
         domains = domainRepository.findAll();
         var domainList = IntStream.of(0, domains.size() - 1)
-                .mapToObj(i -> i + ". " + domains.get(i).getDomain() + "\n")
+                .mapToObj(i -> i + ". " + domains.get(i).getDomain().replaceAll("\\.", " .") + "\n")
                 .toList();
         StringBuilder textMessage = new StringBuilder();
         domainList.forEach(textMessage::append);
@@ -160,10 +196,12 @@ public class RegisterUserBotService {
     protected Status setDomain(Update update) {
         telegramBotService.setStatus(Status.DOMAIN);
         var number = Integer.parseInt(update.getMessage().getText().replaceAll("\\D*", ""));
-        if (number >= domains.size()) {
-            telegramBotService.sendMessage(
-                    update.getMessage().getChatId(),
-                    "указан неверный номер пункта. Попробуйте ещё раз");
+
+        if (number >= domains.size() || number < 0) {
+            DeleteMessage deleteMessage = new DeleteMessage();
+            deleteMessage.setChatId(chatId);
+            deleteMessage.setMessageId(update.getMessage().getMessageId());
+            telegramBotService.sendMessage(deleteMessage);
             getDomain(update);
             return Status.DOMAIN;
         }
@@ -217,64 +255,88 @@ public class RegisterUserBotService {
                 domain.getDomain(),
                 credentialCreateDTO.getLogin(),
                 credentialCreateDTO.getPassword());
-        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-        sendMessage.setText("убедитесь, что данные корректны. Всё ок?\n\n" + userInfo);
-        sendMessage.setReplyMarkup(keyboardBotService.createKeyboard(buttonsFinished));
-        telegramBotService.sendMessage(sendMessage);
+        editMessageText.setChatId(chatId);
+        editMessageText.setText("данные корректны?\n\n" + userInfo);
+        editMessageText.setMessageId(sentMessage);
+        editMessageText.setReplyMarkup(keyboardBotService.createKeyboard(buttonsFinished));
+        telegramBotService.sendMessage(editMessageText);
         return Status.FINISHEDREGISTER;
     }
 
     protected Status onAccept(Update update) {
         telegramBotService.setStatus(Status.ACCEPTUSER);
-        var chatId = update.getCallbackQuery().getMessage().getChatId();
-        if (!verifyData()) {
-            sendMessage.setChatId(chatId);
-            sendMessage.setText("Не хватает данных. Заполните все поля!\n\n");
-            keyboardBotService.createKeyboard();
-            telegramBotService.sendMessage(sendMessage);
-            welcomeToRegister(chatId);
+        editMessageText.setChatId(chatId);
+        editMessageText.setMessageId(sentMessage);
+        editMessageText.setReplyMarkup(keyboardBotService.createKeyboard());
+
+        if (checkingForExistUser(update)) {
+            editMessageText.setText("Вы уже зарегистрированы");
+            telegramBotService.sendMessage(editMessageText);
             return Status.DEFAULT;
         }
-        telegramBotService.sendMessage(sendMessage);
-        if (createProfile(update)) {
-            sendMessage.setChatId(chatId);
-            sendMessage.setReplyMarkup(keyboardBotService.createKeyboard());
-            sendMessage.setText("✅ профиль успешно создан ✅\nдля активации обратитесь к администратору");
-        } else {
-            sendMessage.setChatId(chatId);
-            sendMessage.setReplyMarkup(keyboardBotService.createKeyboard());
-            sendMessage.setText("❌ ошибка, профиль не создан ❌\nобратитесь к администратору");
+
+        if (!verifyData()) {
+            editMessageText.setText("Не хватает данных. Заполните все поля!\n\n");
+            telegramBotService.sendMessage(editMessageText);
+            welcomeToRegister(update);
+            return Status.DEFAULT;
         }
-        telegramBotService.sendMessage(sendMessage);
-        userCreateDTO = null;
-        houseCreateDTO = null;
-        credentialCreateDTO = null;
+
+        if (createProfile(update)) {
+            var text = String.format("""
+                    ✅ профиль успешно создан ✅
+                    сообщите администратору
+                    этот номер: %s""", tgId);
+            editMessageText.setText(text);
+        } else {
+            editMessageText.setText("❌ ошибка, профиль не создан ❌\nобратитесь к администратору");
+        }
+        telegramBotService.sendMessage(editMessageText);
+        userCreateDTO = new UserCreateDTO();
+        houseCreateDTO = new HouseCreateDTO();
+        credentialCreateDTO = new CredentialCreateDTO();
 
         return Status.DEFAULT;
     }
 
     protected Status onReject(Update update) {
         telegramBotService.setStatus(Status.REJECTUSER);
-        welcomeToRegister(update.getCallbackQuery().getMessage().getChatId());
-        return Status.REJECTUSER;
+        DeleteMessage deleteMessage = new DeleteMessage();
+        deleteMessage.setChatId(chatId);
+        deleteMessage.setMessageId(sentMessage);
+        telegramBotService.sendMessage(deleteMessage);
+        welcomeToRegister(update);
+        return Status.DEFAULT;
     }
 
     private void displayPrompt(Update update, Function<Update, Status> consumer, String messageText) {
+        var editMessageText = new EditMessageText();
         var chatId = update.hasMessage() && update.getMessage().hasText()
                 ? update.getMessage().getChatId() : update.getCallbackQuery().getMessage().getChatId();
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(messageText);
-        sendMessage.setReplyMarkup(keyboardBotService.createKeyboard());
-        telegramBotService.sendMessage(sendMessage);
+        editMessageText.setChatId(chatId);
+        editMessageText.setText(messageText);
+        editMessageText.setMessageId(sentMessage);
+        editMessageText.setReplyMarkup(keyboardBotService.createKeyboard());
+
+        telegramBotService.sendMessage(editMessageText);
         telegramBotService.setFunc(telegramBotService.getStatus(), consumer);
     }
 
     private void setter(Update update, Function<Update, Status> consumer, String messageText) {
+        var chatId = update.getMessage().getChatId();
         telegramBotService.setFunc(telegramBotService.getStatus(), consumer);
-        sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText(messageText);
-        sendMessage.setReplyMarkup(keyboardBotService.createKeyboard(buttonsRegister));
-        telegramBotService.sendMessage(sendMessage);
+
+        DeleteMessage deleteMessage = new DeleteMessage();
+        deleteMessage.setChatId(chatId);
+        deleteMessage.setMessageId(update.getMessage().getMessageId());
+        telegramBotService.sendMessage(deleteMessage);
+
+        editMessageText.setChatId(chatId);
+        editMessageText.setText(messageText);
+        editMessageText.setMessageId(sentMessage);
+        editMessageText.setReplyMarkup(keyboardBotService.createKeyboard(buttonsRegister));
+        //TODO optimize once create of keyboard
+        telegramBotService.sendMessage(editMessageText);
     }
 
     private boolean verifyData() {
@@ -287,8 +349,12 @@ public class RegisterUserBotService {
                 & Objects.nonNull(credentialCreateDTO.getPassword());
     }
 
+    private boolean checkingForExistUser(Update update) {
+        return userRepository.findByUserTelegramId(tgId).isPresent();
+    }
+
     private boolean createProfile(Update update) {
-        userCreateDTO.setUserTelegramId(update.getCallbackQuery().getFrom().getId());
+        userCreateDTO.setUserTelegramId(tgId);
         var pwd = String.valueOf(Math.round(Math.random() * Integer.MAX_VALUE / 2)) + System.currentTimeMillis();
         userCreateDTO.setPassword(CoderDecoder.encodeString(pwd));
         userCreateDTO.setPassword(pwd);

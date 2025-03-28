@@ -16,7 +16,6 @@ import java.util.List;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
-
     @Autowired
     private TelegramBotService telegramBotService;
 
@@ -58,11 +57,23 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
 
                 case "/register":
-                    telegramBotService.onRegisterActionDoing(chatId);
+                    telegramBotService.onRegisterActionDoing(update);
                     break;
 
                 case "/help":
                     telegramBotService.onHelpDoing(chatId);
+                    break;
+
+                case "/activate":
+                    telegramBotService.onActiveUser(update);
+                    break;
+
+                case "/gethash":
+                    telegramBotService.onGetHash(update);
+                    break;
+
+                case "/sethash":
+                    telegramBotService.onSetHash(update);
                     break;
 
                 default:

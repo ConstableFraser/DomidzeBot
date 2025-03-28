@@ -1,5 +1,6 @@
 package org.shvedchikov.domidzebot.component;
 
+import lombok.extern.slf4j.Slf4j;
 import org.shvedchikov.domidzebot.config.AppProperties;
 import org.springframework.stereotype.Component;
 
@@ -7,19 +8,27 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
 
+@Slf4j
 @Component
 public final class CoderDecoder {
     private static final int DELTA = 48;
-    private final String hash;
+    private String hash;
 
     public CoderDecoder(AppProperties app) throws Exception {
         if (Objects.isNull(app.getHash())) {
+            log.error("Static property 'hash' is not found");
             throw new Exception("Property 'hash' is not found");
         }
         hash = app.getHash();
     }
 
-    public String encodePwd(String sourcePwd) {
+    public String encodePwd(String sourcePwd) throws Exception {
+        hash = System.getProperty("HASH", "null");
+        if (hash.equals("null")) {
+            log.error("Dynamic property 'hash' is not found");
+            throw new Exception("Dynamic property 'hash' is not found");
+        }
+
         byte[] password = Base64.getDecoder().decode(encodeString(sourcePwd));
         byte[] prop = Base64.getDecoder().decode(hash);
 
@@ -34,7 +43,13 @@ public final class CoderDecoder {
         return Base64.getEncoder().encodeToString(result);
     }
 
-    public String decodePwd(String encodedPwd) {
+    public String decodePwd(String encodedPwd) throws Exception {
+        hash = System.getProperty("HASH", "null");
+        if (hash.equals("null")) {
+            log.error("Dynamic property 'hash' is not found");
+            throw new Exception("Dynamic property 'hash' is not found");
+        }
+
         byte[] password = Base64.getDecoder().decode(encodedPwd);
         byte[] prop = Base64.getDecoder().decode(hash);
 

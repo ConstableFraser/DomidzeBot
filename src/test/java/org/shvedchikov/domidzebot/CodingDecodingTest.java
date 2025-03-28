@@ -1,5 +1,6 @@
 package org.shvedchikov.domidzebot;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.shvedchikov.domidzebot.component.CoderDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,11 @@ import static org.shvedchikov.domidzebot.component.CoderDecoder.decodeString;
 public class CodingDecodingTest {
     @Autowired
     private CoderDecoder coderDecoder;
+
+    @BeforeAll
+    public static void setUp() {
+        System.setProperty("HASH", "REM8OEJITUl1fDc0P02NeDcyR0tNO4era01CRU1KRT88MVBRRUU7OjE7PUpsbUs2RTRNNjFa");
+    }
 
     @Test
     public void testCodeDecodeString() {
@@ -43,6 +49,7 @@ public class CodingDecodingTest {
     @Test
     public void testCodeDecodePwd() {
         var sourcePwd = "source of password";
+
         String encodedPwd;
         String result;
 

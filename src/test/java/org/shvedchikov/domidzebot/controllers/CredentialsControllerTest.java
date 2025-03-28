@@ -51,6 +51,7 @@ public class CredentialsControllerTest {
                             @Autowired CredentialRepository credentialRepository,
                             @Autowired CoderDecoder coderDecoder) {
 
+        System.setProperty("HASH", "REM8OEJITUl1fDc0P02NeDcyR0tNO4era01CRU1KRT88MVBRRUU7OjE7PUpsbUs2RTRNNjFa");
         credentialRepository.deleteAll();
 
         token = jwt().jwt(builder -> builder.subject("bot@domidze.ru"));

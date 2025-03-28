@@ -14,4 +14,7 @@ public class BotConfig {
 
     @Value(value = "${bot.token}")
     private String token;
+
+    @Value(value = "${bot.admin}")
+    private Long idAdmin;
 }
