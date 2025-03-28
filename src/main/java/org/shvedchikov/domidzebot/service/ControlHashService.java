@@ -28,11 +28,11 @@ public class ControlHashService {
             log.warn("You are not a Admin. Id: " + idCurrent);
             return;
         }
-        var hash = System.getProperty("HASH", "null");
+        var hash = System.getProperty("DHASH", "null");
         hash = hash.equals("null") ? hash : CoderDecoder.decodeString(hash);
         var sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText("HASH: " + hash);
+        sendMessage.setText("DHASH: " + hash);
         telegramBotService.sendMessage(sendMessage);
     }
 
@@ -56,7 +56,7 @@ public class ControlHashService {
             return TelegramBotService.Status.DEFAULT;
         }
         var userText = update.getMessage().getText();
-        System.setProperty("HASH", CoderDecoder.encodeString(userText));
+        System.setProperty("DHASH", CoderDecoder.encodeString(userText));
         var sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
         sendMessage.setText("the hash is set");

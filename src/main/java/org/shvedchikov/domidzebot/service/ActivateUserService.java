@@ -15,7 +15,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 @Service
 public class ActivateUserService {
     private TelegramBotService telegramBotService;
-    //private Long idAdmin;
     private Long chatId;
     private Long tgId;
 
@@ -61,7 +60,6 @@ public class ActivateUserService {
             telegramBotService.sendMessage(sendMessage);
             return Status.DEFAULT;
         }
-
         sendMessage.setChatId(chatId);
         sendMessage.setText("[+] success");
         telegramBotService.sendMessage(sendMessage);
@@ -70,6 +68,5 @@ public class ActivateUserService {
 
     protected void setTelegramBot(TelegramBotService telegramBotService) {
         this.telegramBotService = telegramBotService;
-        //this.idAdmin = id;
     }
 }
