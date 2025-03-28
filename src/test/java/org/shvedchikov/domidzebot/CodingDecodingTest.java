@@ -1,4 +1,4 @@
-/*package org.shvedchikov.domidzebot;
+package org.shvedchikov.domidzebot;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -68,4 +68,3 @@ public class CodingDecodingTest {
         assertThat(result).isEqualTo(sourcePwd);
     }
 }
-*/

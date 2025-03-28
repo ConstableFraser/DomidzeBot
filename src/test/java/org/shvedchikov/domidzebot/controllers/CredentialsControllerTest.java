@@ -1,4 +1,4 @@
-/*package org.shvedchikov.domidzebot.controllers;
+package org.shvedchikov.domidzebot.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.instancio.Instancio;
@@ -162,4 +162,3 @@ public class CredentialsControllerTest {
         assertThat(credentialRepository.findById(id)).isNotPresent();
     }
 }
-*/
