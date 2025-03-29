@@ -22,8 +22,8 @@ public class BotConfig {
 
     public boolean isNoAdmin(Long userId) {
         if (Objects.isNull(userId) || Objects.isNull(idAdmin)) {
-            return false;
+            return true;
         }
-        return Objects.equals(idAdmin, userId);
+        return !Objects.equals(idAdmin, userId);
     }
 }
