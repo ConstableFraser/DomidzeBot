@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.shvedchikov.domidzebot.component.TelegramBot;
+import org.shvedchikov.domidzebot.config.BotConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -41,6 +42,10 @@ public class TelegramBotService {
         REJECTUSER,
         ACTIVATE,
         HASH,
+        ENCODESTRING,
+        DECODESTRING,
+        ENCODEPWD,
+        DECODEPWD,
         DEFAULT
     }
 
@@ -52,6 +57,12 @@ public class TelegramBotService {
 
     @Autowired
     private ControlHashService controlHashService;
+
+    @Autowired
+    private CoderService coderService;
+
+    @Autowired
+    private BotConfig botConfig;
 
     private static final String START_TEXT = """
             [СЕРВИС УВЕДОМЛЕНИЙ О БРОНИРОВАНИЯХ]
@@ -82,26 +93,64 @@ public class TelegramBotService {
         registerUserBotService.setTelegramBot(this);
         activateUserService.setTelegramBot(this);
         controlHashService.setTelegramBot(this);
-        mapFunc.put(Status.NAME, registerUserBotService::getName);
-        mapFunc.put(Status.LASTNAME, registerUserBotService::getLastName);
-        mapFunc.put(Status.EMAIL, registerUserBotService::getEmail);
-        mapFunc.put(Status.HOUSENUMBER, registerUserBotService::getHouse);
-        mapFunc.put(Status.DOMAIN, registerUserBotService::getDomain);
-        mapFunc.put(Status.LOGIN, registerUserBotService::getLogin);
-        mapFunc.put(Status.PASSWORD, registerUserBotService::getPassword);
+        coderService.setTelegramBot(this);
         mapFunc.put(Status.FINISHEDREGISTER, registerUserBotService::startCompleteRegister);
+        mapFunc.put(Status.LASTNAME, registerUserBotService::getLastName);
+        mapFunc.put(Status.HOUSENUMBER, registerUserBotService::getHouse);
+        mapFunc.put(Status.PASSWORD, registerUserBotService::getPassword);
         mapFunc.put(Status.ACCEPTUSER, registerUserBotService::onAccept);
         mapFunc.put(Status.REJECTUSER, registerUserBotService::onReject);
         mapFunc.put(Status.ACTIVATE, activateUserService::setUserById);
+        mapFunc.put(Status.DOMAIN, registerUserBotService::getDomain);
+        mapFunc.put(Status.ENCODESTRING, coderService::encodeString);
+        mapFunc.put(Status.DECODESTRING, coderService::decodeString);
+        mapFunc.put(Status.LOGIN, registerUserBotService::getLogin);
+        mapFunc.put(Status.EMAIL, registerUserBotService::getEmail);
+        mapFunc.put(Status.NAME, registerUserBotService::getName);
         mapFunc.put(Status.HASH, controlHashService::setHash);
+        mapFunc.put(Status.ENCODEPWD, coderService::encodePwd);
+        mapFunc.put(Status.DECODEPWD, coderService::decodePwd);
+    }
+
+    private void prompt(Update update) {
+        var idCurrent = update.getMessage().getFrom().getId();
+        if (botConfig.isNoAdmin(idCurrent)) {
+            log.warn("You are not a Admin. Id: " + idCurrent);
+            return;
+        }
+        var sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getMessage().getChatId());
+        sendMessage.setText("->>");
+        sendMessage(sendMessage);
     }
 
     public void onSetHash(Update update) {
-        controlHashService.promptHash(update);
+        status = Status.HASH;
+        prompt(update);
     }
 
     public void onGetHash(Update update) {
         controlHashService.getHash(update);
+    }
+
+    public void onEncodeString(Update update) {
+        status = Status.ENCODESTRING;
+        prompt(update);
+    }
+
+    public void onDecodeString(Update update) {
+        status = Status.DECODESTRING;
+        prompt(update);
+    }
+
+    public void onEncodePwd(Update update) {
+        status = Status.ENCODEPWD;
+        prompt(update);
+    }
+
+    public void onDecodePwd(Update update) {
+        status = Status.DECODEPWD;
+        prompt(update);
     }
 
     public void onActiveUser(Update update) {

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Objects;
-
 @Slf4j
 @Service
 public class ControlHashService {
@@ -24,11 +22,11 @@ public class ControlHashService {
 
     protected void getHash(Update update) {
         var idCurrent = update.getMessage().getFrom().getId();
-        if (isAdmin(idCurrent)) {
+        if (botConfig.isNoAdmin(idCurrent)) {
             log.warn("You are not a Admin. Id: " + idCurrent);
             return;
         }
-        var hash = System.getProperty("HASH", "null");
+        var hash = System.getProperty("DHASH", "null");
         hash = hash.equals("null") ? hash : CoderDecoder.decodeString(hash);
         var sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
@@ -36,35 +34,18 @@ public class ControlHashService {
         telegramBotService.sendMessage(sendMessage);
     }
 
-    protected void promptHash(Update update) {
-        var idCurrent = update.getMessage().getFrom().getId();
-        if (isAdmin(idCurrent)) {
-            log.warn("You are not a Admin. Id: " + idCurrent);
-            return;
-        }
-        var sendMessage = new SendMessage();
-        sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText("->>");
-        telegramBotService.sendMessage(sendMessage);
-        telegramBotService.setStatus(TelegramBotService.Status.HASH);
-    }
-
     protected TelegramBotService.Status setHash(Update update) {
         var idCurrent = update.getMessage().getFrom().getId();
-        if (isAdmin(idCurrent)) {
+        if (botConfig.isNoAdmin(idCurrent)) {
             log.warn("You are not a Admin. Id: " + idCurrent);
             return TelegramBotService.Status.DEFAULT;
         }
         var userText = update.getMessage().getText();
-        System.setProperty("HASH", CoderDecoder.encodeString(userText));
+        System.setProperty("DHASH", CoderDecoder.encodeString(userText));
         var sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
         sendMessage.setText("the hash is set");
         telegramBotService.sendMessage(sendMessage);
         return TelegramBotService.Status.DEFAULT;
-    }
-
-    private boolean isAdmin(Long idCurrent) {
-        return !Objects.equals(botConfig.getIdAdmin(), idCurrent);
     }
 }

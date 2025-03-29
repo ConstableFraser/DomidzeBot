@@ -76,6 +76,22 @@ public class TelegramBot extends TelegramLongPollingBot {
                     telegramBotService.onSetHash(update);
                     break;
 
+                case "/encodestring":
+                    telegramBotService.onEncodeString(update);
+                    break;
+
+                case "/decodestring":
+                    telegramBotService.onDecodeString(update);
+                    break;
+
+                case "/encodepwd":
+                    telegramBotService.onEncodePwd(update);
+                    break;
+
+                case "/decodepwd":
+                    telegramBotService.onDecodePwd(update);
+                    break;
+
                 default:
                     telegramBotService.onUnknownActionDoing(update);
                     break;
