@@ -14,6 +14,9 @@ public class DataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        if (!domainService.getAll().isEmpty()) {
+            return;
+        }
         var domainCreateDTO = new DomainCreateDTO();
         domainCreateDTO.setDomain("ethnomir.ru");
         domainService.create(domainCreateDTO);
