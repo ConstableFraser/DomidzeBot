@@ -64,6 +64,9 @@ public class TelegramBotService {
     private UserRepository userRepository;
 
     @Autowired
+    private KeyboardBotService keyboardBotService;
+
+    @Autowired
     private CoderService coderService;
 
     @Autowired
@@ -80,19 +83,22 @@ public class TelegramBotService {
             1. зарегистрироваться
             2. настроить уведомления
 
-            /register -- регистрация владельца
-            /monthly -- список броней на месяц вперёд
-            /notify -- настройка автоуведомлений
-            /help -- получить справку""";
+            /register - регистрация владельца
+            /month - брони на месяц вперёд
+            /halfyear - брони на полгода вперёд
+            /monthprev - брони на месяц вперёд
+            /halfyearprev - брони на полгода назад
+            /help - справка""";
 
     private static final String HELP_TEXT = """
             [СЕРВИС УВЕДОМЛЕНИЙ О БРОНИРОВАНИЯХ]
 
             Доступные функции:
-            бот присылает информацию о бронированиях
+            🔹регистрация собственника
+            🔹информирование о бронированиях
 
-            контактная информация:
-            @sanswed
+            Контактная информация:
+            🔮 @sanswed
             """;
 
     @PostConstruct
@@ -114,9 +120,9 @@ public class TelegramBotService {
         mapFunc.put(Status.LOGIN, registerUserBotService::getLogin);
         mapFunc.put(Status.EMAIL, registerUserBotService::getEmail);
         mapFunc.put(Status.NAME, registerUserBotService::getName);
-        mapFunc.put(Status.HASH, controlHashService::setHash);
         mapFunc.put(Status.ENCODEPWD, coderService::encodePwd);
         mapFunc.put(Status.DECODEPWD, coderService::decodePwd);
+        mapFunc.put(Status.HASH, controlHashService::setHash);
     }
 
     private void prompt(Update update) {
@@ -134,6 +140,10 @@ public class TelegramBotService {
     public void onGetPeriod(Update update, Period period) {
         var user = userRepository.findByUserTelegramId(update.getMessage().getFrom().getId());
         if (user.isEmpty() || !user.get().isEnabled()) {
+            log.warn("Attempt to request period: " + update.getMessage().getFrom().getId());
+            sendMessage.setChatId(update.getMessage().getChatId());
+            sendMessage.setText("Требуется регистрация");
+            sendMessage(sendMessage);
             return;
         }
         sendMessage.setChatId(update.getMessage().getChatId());
@@ -183,6 +193,7 @@ public class TelegramBotService {
     }
 
     public void onStartActionDoing(Long chatId) {
+        sendMessage.setReplyMarkup(keyboardBotService.createMainKeyboard());
         sendMessage(chatId, START_TEXT);
     }
 

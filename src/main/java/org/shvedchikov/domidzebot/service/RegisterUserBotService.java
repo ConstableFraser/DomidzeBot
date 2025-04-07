@@ -106,13 +106,13 @@ public class RegisterUserBotService {
         }
         sendMessage.setChatId(chatId);
         if (userRepository.findByUserTelegramId(tgId).isPresent()) {
-            sendMessage.setReplyMarkup(keyboardBotService.createKeyboard());
+            sendMessage.setReplyMarkup(keyboardBotService.createInlineKeyboard());
             sendMessage.setText("Вы уже зарегистрированы");
             sentMessage = telegramBotService.sendMessage(sendMessage);
             return;
         }
         sendMessage.setText(REG_TEXT);
-        sendMessage.setReplyMarkup(keyboardBotService.createKeyboard(buttonsRegister));
+        sendMessage.setReplyMarkup(keyboardBotService.createInlineKeyboard(buttonsRegister));
         sentMessage = telegramBotService.sendMessage(sendMessage);
     }
 
@@ -258,7 +258,7 @@ public class RegisterUserBotService {
         editMessageText.setChatId(chatId);
         editMessageText.setText("данные корректны?\n\n" + userInfo);
         editMessageText.setMessageId(sentMessage);
-        editMessageText.setReplyMarkup(keyboardBotService.createKeyboard(buttonsFinished));
+        editMessageText.setReplyMarkup(keyboardBotService.createInlineKeyboard(buttonsFinished));
         telegramBotService.sendMessage(editMessageText);
         return Status.FINISHEDREGISTER;
     }
@@ -267,7 +267,7 @@ public class RegisterUserBotService {
         telegramBotService.setStatus(Status.ACCEPTUSER);
         editMessageText.setChatId(chatId);
         editMessageText.setMessageId(sentMessage);
-        editMessageText.setReplyMarkup(keyboardBotService.createKeyboard());
+        editMessageText.setReplyMarkup(keyboardBotService.createInlineKeyboard());
 
         if (checkingForExistUser(update)) {
             editMessageText.setText("Вы уже зарегистрированы");
@@ -316,7 +316,7 @@ public class RegisterUserBotService {
         editMessageText.setChatId(chatId);
         editMessageText.setText(messageText);
         editMessageText.setMessageId(sentMessage);
-        editMessageText.setReplyMarkup(keyboardBotService.createKeyboard());
+        editMessageText.setReplyMarkup(keyboardBotService.createInlineKeyboard());
 
         telegramBotService.sendMessage(editMessageText);
         telegramBotService.setFunc(telegramBotService.getStatus(), consumer);
@@ -334,7 +334,7 @@ public class RegisterUserBotService {
         editMessageText.setChatId(chatId);
         editMessageText.setText(messageText);
         editMessageText.setMessageId(sentMessage);
-        editMessageText.setReplyMarkup(keyboardBotService.createKeyboard(buttonsRegister));
+        editMessageText.setReplyMarkup(keyboardBotService.createInlineKeyboard(buttonsRegister));
         //TODO optimize once create of keyboard
         telegramBotService.sendMessage(editMessageText);
     }

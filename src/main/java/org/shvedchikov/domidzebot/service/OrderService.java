@@ -1,5 +1,6 @@
 package org.shvedchikov.domidzebot.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.time.Period;
 
+@Slf4j
 @Service
 public class OrderService {
     @Autowired
