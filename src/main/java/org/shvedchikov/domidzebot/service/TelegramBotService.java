@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.shvedchikov.domidzebot.component.TelegramBot;
 import org.shvedchikov.domidzebot.config.BotConfig;
+import org.shvedchikov.domidzebot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,6 +15,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.time.Period;
 import java.util.function.Function;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +61,13 @@ public class TelegramBotService {
     private ControlHashService controlHashService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private CoderService coderService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private BotConfig botConfig;
@@ -80,13 +88,12 @@ public class TelegramBotService {
     private static final String HELP_TEXT = """
             [СЕРВИС УВЕДОМЛЕНИЙ О БРОНИРОВАНИЯХ]
 
-            бот умеет делать:
-            1) 2) 3) 4)
+            Доступные функции:
+            бот присылает информацию о бронированиях
 
             контактная информация:
-            sanswed@gmail.com
             @sanswed
-            © by Alexander Shvedchikov""";
+            """;
 
     @PostConstruct
     private void setTelegramService() {
@@ -115,12 +122,22 @@ public class TelegramBotService {
     private void prompt(Update update) {
         var idCurrent = update.getMessage().getFrom().getId();
         if (botConfig.isNoAdmin(idCurrent)) {
-            log.warn("You are not a Admin. Id: " + idCurrent);
+            log.warn("You are not an Admin. Id: " + idCurrent);
             return;
         }
         var sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
         sendMessage.setText("->>");
+        sendMessage(sendMessage);
+    }
+
+    public void onGetPeriod(Update update, Period period) {
+        var user = userRepository.findByUserTelegramId(update.getMessage().getFrom().getId());
+        if (user.isEmpty() || !user.get().isEnabled()) {
+            return;
+        }
+        sendMessage.setChatId(update.getMessage().getChatId());
+        sendMessage.setText(orderService.getInfoOrders(user.get(), period));
         sendMessage(sendMessage);
     }
 

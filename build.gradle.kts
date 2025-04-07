@@ -34,6 +34,7 @@ dependencies {
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 	implementation("org.telegram:telegrambots:6.9.7.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.3")
+	implementation("org.jsoup:jsoup:1.19.1")
 	implementation("org.instancio:instancio-junit:5.0.2")
 	testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.7")
 	implementation("net.datafaker:datafaker:2.3.0")
