@@ -15,24 +15,24 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 @Service
 public class RegisterUserBotService {
     private static final String REG_TEXT = """
             [СТАРТ РЕГИСТРАЦИИ]
 
-            Для регистрации обязательно заполнить:
+            Для регистрации пожалуйста укажите:
              - имя, фамилию и почту
              - номер дома
-             - указать сайт
-             - реквизиты доступа к ЛК""";
+             - личный кабинет
+             - реквизиты доступа к личному кабинету""";
 
     private final List<Map<String, String>> buttonsRegister = List.of(
             new LinkedHashMap<>() {
@@ -78,7 +78,6 @@ public class RegisterUserBotService {
 
     @Autowired
     private UserRepository userRepository;
-
 
     @Autowired
     private KeyboardBotService keyboardBotService;
@@ -148,7 +147,7 @@ public class RegisterUserBotService {
         return Status.EMAIL;
     }
 
-    protected Status setEmail(Update update) { // TODO [400] Bad Request
+    protected Status setEmail(Update update) {
         var emailregex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
         var pattern = Pattern.compile(emailregex);
         var email = update.getMessage().getText();
@@ -158,7 +157,6 @@ public class RegisterUserBotService {
             deleteMessage.setChatId(chatId);
             deleteMessage.setMessageId(update.getMessage().getMessageId());
             telegramBotService.sendMessage(deleteMessage);
-            getEmail(update);
             return Status.EMAIL;
         }
         telegramBotService.setStatus(Status.EMAIL);
@@ -175,7 +173,16 @@ public class RegisterUserBotService {
 
     protected Status setHouse(Update update) {
         telegramBotService.setStatus(Status.HOUSENUMBER);
-        houseCreateDTO.setNumber(Integer.valueOf(update.getMessage().getText().replaceAll("\\D*", "")));
+        var inputString = update.getMessage().getText().replaceAll("\\D*", "");
+
+        if (inputString.isEmpty() || Integer.parseInt(inputString) == 0) {
+            DeleteMessage deleteMessage = new DeleteMessage();
+            deleteMessage.setChatId(chatId);
+            deleteMessage.setMessageId(update.getMessage().getMessageId());
+            telegramBotService.sendMessage(deleteMessage);
+            return Status.HOUSENUMBER;
+        }
+        houseCreateDTO.setNumber(Integer.parseInt(inputString));
         setter(update, this::getHouse, "Номер дома сохранён. Нажмите \"5. сайт\"");
         return Status.DEFAULT;
     }
@@ -183,31 +190,42 @@ public class RegisterUserBotService {
     protected Status getDomain(Update update) {
         telegramBotService.setStatus(Status.DOMAIN);
         domains = domainRepository.findAll();
-        var domainList = IntStream.of(0, domains.size() - 1)
-                .mapToObj(i -> i + ". " + domains.get(i).getDomain().replaceAll("\\.", " .") + "\n")
+        var domainList = domains.stream()
+                .map(d -> d.getDomain().replaceAll("\\..*", "").toUpperCase().toUpperCase())
                 .toList();
-        StringBuilder textMessage = new StringBuilder();
-        domainList.forEach(textMessage::append);
-        displayPrompt(update, this::setDomain,
-                "Шаг 5 из 7. Укажите сайт (напишите номер пункта):\n\n" + textMessage);
+        final List<Map<String, String>> buttonsDomains = new ArrayList<>();
+        for (String domain : domainList) {
+            Map<String, String> map = new LinkedHashMap<>();
+            map.put(domain, domain);
+            buttonsDomains.add(map);
+        }
+        editMessageText.setChatId(chatId);
+        editMessageText.setText("Шаг 5 из 7. Где ваш личный кабинет?");
+        editMessageText.setMessageId(sentMessage);
+        editMessageText.setReplyMarkup(keyboardBotService.createInlineKeyboard(buttonsDomains));
+        telegramBotService.sendMessage(editMessageText);
         return Status.DOMAIN;
     }
 
-    protected Status setDomain(Update update) {
+    protected void setDomain(Update update, String domainShortname) {
         telegramBotService.setStatus(Status.DOMAIN);
-        var number = Integer.parseInt(update.getMessage().getText().replaceAll("\\D*", ""));
-
-        if (number >= domains.size() || number < 0) {
-            DeleteMessage deleteMessage = new DeleteMessage();
-            deleteMessage.setChatId(chatId);
-            deleteMessage.setMessageId(update.getMessage().getMessageId());
-            telegramBotService.sendMessage(deleteMessage);
-            getDomain(update);
-            return Status.DOMAIN;
-        }
-        this.domain = domainRepository.findDomainByDomain(domains.get(number).getDomain());
+        var domainName = domains.stream()
+                .map(Domain::getDomain)
+                .filter(d -> d.contains(domainShortname.toLowerCase()))
+                .findFirst()
+                .orElse("");
+        this.domain = domainRepository.findDomainByDomain(domainName);
         setter(update, this::getDomain, "Выбранный сайт сохранён. Нажмите \"6. логин\"");
-        return Status.DEFAULT;
+    }
+
+    protected Status setEthnomir(Update update) {
+        setDomain(update, update.getCallbackQuery().getData());
+        return Status.DOMAIN;
+    }
+
+    protected Status setBnovo(Update update) {
+        setDomain(update, update.getCallbackQuery().getData());
+        return Status.DOMAIN;
     }
 
     protected Status getLogin(Update update) {
@@ -323,19 +341,19 @@ public class RegisterUserBotService {
     }
 
     private void setter(Update update, Function<Update, Status> consumer, String messageText) {
-        var chatId = update.getMessage().getChatId();
         telegramBotService.setFunc(telegramBotService.getStatus(), consumer);
 
-        DeleteMessage deleteMessage = new DeleteMessage();
-        deleteMessage.setChatId(chatId);
-        deleteMessage.setMessageId(update.getMessage().getMessageId());
-        telegramBotService.sendMessage(deleteMessage);
+        if (!update.hasCallbackQuery()) {
+            DeleteMessage deleteMessage = new DeleteMessage();
+            deleteMessage.setChatId(this.chatId);
+            deleteMessage.setMessageId(update.getMessage().getMessageId());
+            telegramBotService.sendMessage(deleteMessage);
+        }
 
-        editMessageText.setChatId(chatId);
+        editMessageText.setChatId(this.chatId);
         editMessageText.setText(messageText);
         editMessageText.setMessageId(sentMessage);
         editMessageText.setReplyMarkup(keyboardBotService.createInlineKeyboard(buttonsRegister));
-        //TODO optimize once create of keyboard
         telegramBotService.sendMessage(editMessageText);
     }
 

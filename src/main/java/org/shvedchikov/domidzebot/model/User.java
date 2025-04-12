@@ -50,13 +50,10 @@ public class User implements UserDetails {
     @NotNull
     @Column(unique = true)
     @Email
-    @ToString.Include
     private String email;
 
-    @ToString.Include
     private String firstName;
 
-    @ToString.Include
     private String lastName;
 
     @NotNull

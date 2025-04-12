@@ -20,7 +20,7 @@ public class DataInitializer implements ApplicationRunner {
         var domainCreateDTO = new DomainCreateDTO();
         domainCreateDTO.setDomain("ethnomir.ru");
         domainService.create(domainCreateDTO);
-        domainCreateDTO.setDomain("bnovo.ru");
-        domainService.create(domainCreateDTO);
+//        domainCreateDTO.setDomain("bnovo.ru");
+//        domainService.create(domainCreateDTO);
     }
 }

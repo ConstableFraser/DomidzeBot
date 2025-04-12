@@ -42,6 +42,8 @@ public class TelegramBotService {
         FINISHEDREGISTER,
         ACCEPTUSER,
         REJECTUSER,
+        ETHNOMIR,
+        BNOVO,
         ACTIVATE,
         HASH,
         ENCODESTRING,
@@ -111,6 +113,7 @@ public class TelegramBotService {
         mapFunc.put(Status.LASTNAME, registerUserBotService::getLastName);
         mapFunc.put(Status.HOUSENUMBER, registerUserBotService::getHouse);
         mapFunc.put(Status.PASSWORD, registerUserBotService::getPassword);
+        mapFunc.put(Status.ETHNOMIR, registerUserBotService::setEthnomir);
         mapFunc.put(Status.ACCEPTUSER, registerUserBotService::onAccept);
         mapFunc.put(Status.REJECTUSER, registerUserBotService::onReject);
         mapFunc.put(Status.ACTIVATE, activateUserService::setUserById);
@@ -119,10 +122,12 @@ public class TelegramBotService {
         mapFunc.put(Status.DECODESTRING, coderService::decodeString);
         mapFunc.put(Status.LOGIN, registerUserBotService::getLogin);
         mapFunc.put(Status.EMAIL, registerUserBotService::getEmail);
+        mapFunc.put(Status.BNOVO, registerUserBotService::setBnovo);
         mapFunc.put(Status.NAME, registerUserBotService::getName);
         mapFunc.put(Status.ENCODEPWD, coderService::encodePwd);
         mapFunc.put(Status.DECODEPWD, coderService::decodePwd);
         mapFunc.put(Status.HASH, controlHashService::setHash);
+
     }
 
     private void prompt(Update update) {
@@ -224,7 +229,7 @@ public class TelegramBotService {
         var id = update.getCallbackQuery().getData();
         status = Status.valueOf(id);
 
-        status = mapFunc.getOrDefault(status, (e) -> {
+        this.status = mapFunc.getOrDefault(status, (e) -> {
                     log.warn(
                             this.getClass().getSimpleName() + ": not found method on CallbackQuery");
                     return Status.DEFAULT;

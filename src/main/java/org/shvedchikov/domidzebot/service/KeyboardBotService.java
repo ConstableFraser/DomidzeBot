@@ -36,7 +36,7 @@ public class KeyboardBotService {
 
     public ReplyKeyboardMarkup createMainKeyboard() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setSelective(false);
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
 
