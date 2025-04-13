@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Period;
+import java.util.Iterator;
 
 @Slf4j
 @Service
@@ -31,7 +32,7 @@ public class OrderService {
     private String login;
     private byte[] password;
 
-    protected String getInfoOrders(User user, Period period) {
+    protected String getInfoOrders(User user, Period period, Boolean withPrice) {
         var result = houseRepository.findAllByOwner(user.getId());
         // domain = String.valueOf(result.get(0).getOrDefault("domain", "null"));
         login = String.valueOf(result.get(0).getOrDefault("login", "null"));
@@ -42,7 +43,7 @@ public class OrderService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return parserHtml(connectedToDomain(period));
+        return parserHtml(connectedToDomain(period), withPrice);
     }
 
     private String connectedToDomain(Period period) {
@@ -51,7 +52,7 @@ public class OrderService {
         return restRequestSender.sendRequest();
     }
 
-    private String parserHtml(String body) {
+    private String parserHtml(String body, Boolean withPrice) {
         var regStr1 = "\\* Цена до вычета услуг управляющего агента. \\| ";
         var regStr2 = "Дома \\| Барн Хаус \\d+ \\| ";
         StringBuilder result = new StringBuilder();
@@ -60,10 +61,21 @@ public class OrderService {
         Elements rows = table.select("tr");
         rows.remove(0);
 
-        for (Element row : rows) {
-            Elements cells = row.select("th, td");
-            for (Element cell : cells) {
-                String text = cell.text();
+        Iterator<Element> iterRows = rows.iterator();
+
+        while (iterRows.hasNext()) {
+            var iterRow = iterRows.next();
+            if (!withPrice && !iterRows.hasNext()) {
+                break;
+            }
+            Elements cells = iterRow.select("th, td");
+            Iterator<Element> iterCells = cells.iterator();
+            while (iterCells.hasNext()) {
+                var element = iterCells.next();
+                if (!withPrice && !iterCells.hasNext()) {
+                    break;
+                }
+                var text = element.text();
                 result.append(text).append(" | ");
             }
             result.append("\n");

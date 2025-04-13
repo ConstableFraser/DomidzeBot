@@ -86,10 +86,11 @@ public class TelegramBotService {
             2. настроить уведомления
 
             /register - регистрация владельца
-            /month - брони на месяц вперёд
-            /halfyear - брони на полгода вперёд
-            /monthprev - брони на месяц вперёд
-            /halfyearprev - брони на полгода назад
+            /monthminus - на месяц вперёд без денег
+            /month - на месяц вперёд (+деньги)
+            /halfyear - на полгода вперёд (+деньги)
+            /monthprev - на месяц назад (+деньги)
+            /halfyearprev - на полгода назад (+деньги)
             /help - справка""";
 
     private static final String HELP_TEXT = """
@@ -142,7 +143,7 @@ public class TelegramBotService {
         sendMessage(sendMessage);
     }
 
-    public void onGetPeriod(Update update, Period period) {
+    public void onGetPeriod(Update update, Period period, Boolean withPrice) {
         var user = userRepository.findByUserTelegramId(update.getMessage().getFrom().getId());
         if (user.isEmpty() || !user.get().isEnabled()) {
             log.warn("Attempt to request period: " + update.getMessage().getFrom().getId());
@@ -152,7 +153,7 @@ public class TelegramBotService {
             return;
         }
         sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText(orderService.getInfoOrders(user.get(), period));
+        sendMessage.setText(orderService.getInfoOrders(user.get(), period, withPrice));
         sendMessage(sendMessage);
     }
 
