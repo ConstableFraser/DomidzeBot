@@ -130,6 +130,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                     telegramBotService.onGetPeriod(update, Period.between(startDate, endDate), true);
                     break;
 
+                case "/users":
+                    telegramBotService.onGetListUsers(update);
+                    break;
+
                 default:
                     telegramBotService.onUnknownActionDoing(update);
                     break;

@@ -19,6 +19,7 @@ import java.time.Period;
 import java.util.function.Function;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -140,6 +141,22 @@ public class TelegramBotService {
         var sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId());
         sendMessage.setText("->>");
+        sendMessage(sendMessage);
+    }
+
+    public void onGetListUsers(Update update) {
+        var idCurrent = update.getMessage().getFrom().getId();
+        if (botConfig.isNoAdmin(idCurrent)) {
+            log.warn("You are not an Admin. Id: " + idCurrent);
+            return;
+        }
+        var users = userRepository.findAll().stream()
+                .map(user -> user.getUsername() + " | " + user.getFirstName() + " | " +  user.getLastName())
+                .collect(Collectors.joining("\n"));
+
+        var sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getMessage().getChatId());
+        sendMessage.setText(users);
         sendMessage(sendMessage);
     }
 
