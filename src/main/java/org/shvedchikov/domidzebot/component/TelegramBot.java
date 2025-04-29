@@ -12,7 +12,6 @@ import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +33,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         menuOfCommands.add(new BotCommand("/halfyear", "[+6 месяцев]"));
         menuOfCommands.add(new BotCommand("/monthprev", "[-1 месяц]"));
         menuOfCommands.add(new BotCommand("/halfyearprev", "[-6 месяцев]"));
+        menuOfCommands.add(new BotCommand("/period", "указать вручную"));
         menuOfCommands.add(new BotCommand("/help", "[справка]"));
-        // menuOfCommands.add(new BotCommand("/whoami", "[кто я?]"));
         var myCommands = new SetMyCommands();
         myCommands.setCommands(menuOfCommands);
-
         try {
             execute(myCommands);
         } catch (TelegramApiException e) {
@@ -100,34 +98,38 @@ public class TelegramBot extends TelegramLongPollingBot {
                     telegramBotService.onDecodePwd(update);
                     break;
 
+                case "/period":
+                    telegramBotService.onSetPeriodByUser(update);
+                    break;
+
                 case "/monthminus":
                     startDate = LocalDate.now();
                     endDate = LocalDate.now().plusMonths(1);
-                    telegramBotService.onGetPeriod(update, Period.between(startDate, endDate), false);
+                    telegramBotService.onGetPeriod(update, startDate, endDate, false);
                     break;
 
                 case "/month":
                     startDate = LocalDate.now();
                     endDate = LocalDate.now().plusMonths(1);
-                    telegramBotService.onGetPeriod(update, Period.between(startDate, endDate), true);
+                    telegramBotService.onGetPeriod(update, startDate, endDate, true);
                     break;
 
                 case "/halfyear":
                     startDate = LocalDate.now();
                     endDate = LocalDate.now().plusMonths(6);
-                    telegramBotService.onGetPeriod(update, Period.between(startDate, endDate), true);
+                    telegramBotService.onGetPeriod(update, startDate, endDate, true);
                     break;
 
                 case "/monthprev":
                     startDate = LocalDate.now();
                     endDate = LocalDate.now().minusMonths(1);
-                    telegramBotService.onGetPeriod(update, Period.between(startDate, endDate), true);
+                    telegramBotService.onGetPeriod(update, startDate, endDate, true);
                     break;
 
                 case "/halfyearprev":
                     startDate = LocalDate.now();
                     endDate = LocalDate.now().minusMonths(6);
-                    telegramBotService.onGetPeriod(update, Period.between(startDate, endDate), true);
+                    telegramBotService.onGetPeriod(update, startDate, endDate, true);
                     break;
 
                 case "/users":

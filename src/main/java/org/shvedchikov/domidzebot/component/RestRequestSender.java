@@ -12,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.Base64;
 import java.util.Collections;
 
@@ -26,8 +25,8 @@ public class RestRequestSender {
         this.restTemplate = restTemplate;
     }
 
-    public void setHeaders(String username, String password, Period period) {
-        this.httpHeaderCreator = new HttpHeaderCreator(username, password, period);
+    public void setHeaders(String username, String password, LocalDate startDate, LocalDate endDate) {
+        this.httpHeaderCreator = new HttpHeaderCreator(username, password, startDate, endDate);
     }
 
     public void setHost(String host) {
@@ -38,15 +37,14 @@ public class RestRequestSender {
     private static final class HttpHeaderCreator {
         private final HttpEntity<MultiValueMap<String, String>> httpEntity;
 
-        private HttpHeaderCreator(String username, String password, Period period) {
-            this.httpEntity = createHeader(username, password, period);
+        private HttpHeaderCreator(String username, String password, LocalDate startDate, LocalDate endDate) {
+            this.httpEntity = createHeader(username, password, startDate, endDate);
         }
 
-        private HttpEntity<MultiValueMap<String, String>> createHeader(String username, String pwd, Period period) {
-            var startDate = period.getMonths() > 0
-                    ? LocalDate.now() : LocalDate.now().minusMonths(Math.abs(period.getMonths()));
-            var endDate = period.getMonths() < 0
-                    ? LocalDate.now() : LocalDate.now().plusMonths(period.getMonths());
+        private HttpEntity<MultiValueMap<String, String>> createHeader(String username,
+                                                                       String pwd,
+                                                                       LocalDate startDate,
+                                                                       LocalDate endDate) {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
             MultiValueMap<String, String> dataPayload = new LinkedMultiValueMap<>();

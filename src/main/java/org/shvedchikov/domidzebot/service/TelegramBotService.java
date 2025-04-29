@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.time.Period;
+import java.time.LocalDate;
 import java.util.function.Function;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +51,7 @@ public class TelegramBotService {
         DECODESTRING,
         ENCODEPWD,
         DECODEPWD,
+        SETPERIOD,
         DEFAULT
     }
 
@@ -111,6 +112,7 @@ public class TelegramBotService {
         activateUserService.setTelegramBot(this);
         controlHashService.setTelegramBot(this);
         coderService.setTelegramBot(this);
+        orderService.setTelegramBot(this);
         mapFunc.put(Status.FINISHEDREGISTER, registerUserBotService::startCompleteRegister);
         mapFunc.put(Status.LASTNAME, registerUserBotService::getLastName);
         mapFunc.put(Status.HOUSENUMBER, registerUserBotService::getHouse);
@@ -129,7 +131,7 @@ public class TelegramBotService {
         mapFunc.put(Status.ENCODEPWD, coderService::encodePwd);
         mapFunc.put(Status.DECODEPWD, coderService::decodePwd);
         mapFunc.put(Status.HASH, controlHashService::setHash);
-
+        mapFunc.put(Status.SETPERIOD, orderService::getDates);
     }
 
     private void prompt(Update update) {
@@ -160,7 +162,11 @@ public class TelegramBotService {
         sendMessage(sendMessage);
     }
 
-    public void onGetPeriod(Update update, Period period, Boolean withPrice) {
+    public void onSetPeriodByUser(Update update) {
+        orderService.getDates(update);
+    }
+
+    public void onGetPeriod(Update update, LocalDate startDate, LocalDate endDate, Boolean withPrice) {
         var user = userRepository.findByUserTelegramId(update.getMessage().getFrom().getId());
         if (user.isEmpty() || !user.get().isEnabled()) {
             log.warn("Attempt to request period: " + update.getMessage().getFrom().getId());
@@ -170,7 +176,7 @@ public class TelegramBotService {
             return;
         }
         sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText(orderService.getInfoOrders(user.get(), period, withPrice));
+        sendMessage.setText(orderService.getInfoOrders(user.get(), startDate, endDate, withPrice));
         sendMessage(sendMessage);
     }
 
