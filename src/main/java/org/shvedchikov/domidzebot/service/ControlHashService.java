@@ -2,6 +2,7 @@ package org.shvedchikov.domidzebot.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.shvedchikov.domidzebot.component.CoderDecoder;
+import org.shvedchikov.domidzebot.util.Status;
 import org.shvedchikov.domidzebot.config.BotConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,11 @@ public class ControlHashService {
         telegramBotService.sendMessage(sendMessage);
     }
 
-    protected TelegramBotService.Status setHash(Update update) {
+    protected Status setHash(Update update) {
         var idCurrent = update.getMessage().getFrom().getId();
         if (botConfig.isNoAdmin(idCurrent)) {
             log.warn("You are not a Admin. Id: " + idCurrent);
-            return TelegramBotService.Status.DEFAULT;
+            return Status.DEFAULT;
         }
         var userText = update.getMessage().getText();
         System.setProperty("DHASH", CoderDecoder.encodeString(userText));
@@ -46,6 +47,6 @@ public class ControlHashService {
         sendMessage.setChatId(update.getMessage().getChatId());
         sendMessage.setText("the hash is set");
         telegramBotService.sendMessage(sendMessage);
-        return TelegramBotService.Status.DEFAULT;
+        return Status.DEFAULT;
     }
 }

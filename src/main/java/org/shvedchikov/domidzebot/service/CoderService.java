@@ -2,7 +2,7 @@ package org.shvedchikov.domidzebot.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.shvedchikov.domidzebot.component.CoderDecoder;
-import org.shvedchikov.domidzebot.service.TelegramBotService.Status;
+import org.shvedchikov.domidzebot.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;

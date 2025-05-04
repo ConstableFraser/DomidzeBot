@@ -1,6 +1,6 @@
 package org.shvedchikov.domidzebot.service;
 
-import static org.shvedchikov.domidzebot.service.TelegramBotService.Status;
+import org.shvedchikov.domidzebot.util.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -54,7 +54,7 @@ public class OrderService {
 
     protected Status getDates(Update update) {
         var sendMessage = new SendMessage();
-        telegramBotService.setStatus(TelegramBotService.Status.SETPERIOD);
+        telegramBotService.setStatus(Status.SETPERIOD);
         var user = userRepository.findByUserTelegramId(update.getMessage().getFrom().getId());
         if (user.isEmpty() || !user.get().isEnabled()) {
             log.warn("Attempt to request period: " + update.getMessage().getFrom().getId());

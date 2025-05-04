@@ -1,6 +1,5 @@
 package org.shvedchikov.domidzebot.service;
 
-import static org.shvedchikov.domidzebot.service.TelegramBotService.Status;
 import org.shvedchikov.domidzebot.dto.credential.CredentialCreateDTO;
 import org.shvedchikov.domidzebot.dto.house.HouseCreateDTO;
 import org.shvedchikov.domidzebot.dto.user.UserCreateDTO;
@@ -22,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import org.shvedchikov.domidzebot.util.Status;
 
 @Service
 public class RegisterUserBotService {

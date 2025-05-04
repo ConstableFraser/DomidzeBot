@@ -4,9 +4,11 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.shvedchikov.domidzebot.util.Command;
 import org.shvedchikov.domidzebot.component.TelegramBot;
 import org.shvedchikov.domidzebot.config.BotConfig;
 import org.shvedchikov.domidzebot.repository.UserRepository;
+import org.shvedchikov.domidzebot.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.function.Function;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,29 +34,6 @@ public class TelegramBotService {
     @Getter
     @Setter
     private Status status;
-
-    protected enum Status {
-        NAME,
-        LASTNAME,
-        EMAIL,
-        HOUSENUMBER,
-        DOMAIN,
-        LOGIN,
-        PASSWORD,
-        FINISHEDREGISTER,
-        ACCEPTUSER,
-        REJECTUSER,
-        ETHNOMIR,
-        BNOVO,
-        ACTIVATE,
-        HASH,
-        ENCODESTRING,
-        DECODESTRING,
-        ENCODEPWD,
-        DECODEPWD,
-        SETPERIOD,
-        DEFAULT
-    }
 
     @Autowired
     private RegisterUserBotService registerUserBotService;
@@ -166,7 +146,7 @@ public class TelegramBotService {
         orderService.getDates(update);
     }
 
-    public void onGetPeriod(Update update, LocalDate startDate, LocalDate endDate, Boolean withPrice) {
+    public void onGetPeriod(Update update) {
         var user = userRepository.findByUserTelegramId(update.getMessage().getFrom().getId());
         if (user.isEmpty() || !user.get().isEnabled()) {
             log.warn("Attempt to request period: " + update.getMessage().getFrom().getId());
@@ -175,6 +155,16 @@ public class TelegramBotService {
             sendMessage(sendMessage);
             return;
         }
+        var command = update.getMessage().getText().replace("/", "").toUpperCase();
+        var startDate = LocalDate.now();
+        var countMonth = command.contains("MONTH") ? 1 : 6;
+        var endDate = startDate.plusMonths(countMonth);
+
+        if (List.of(Command.MONTHPREV, Command.HALFYEARPREV).contains(Command.valueOf(command))) {
+            endDate = LocalDate.now();
+            startDate = endDate.minusMonths(countMonth);
+        }
+        var withPrice = !Command.MONTHMINUS.equals(Command.valueOf(command));
         sendMessage.setChatId(update.getMessage().getChatId());
         sendMessage.setText(orderService.getInfoOrders(user.get(), startDate, endDate, withPrice));
         sendMessage(sendMessage);
@@ -210,6 +200,7 @@ public class TelegramBotService {
     }
 
     public void onActiveUser(Update update) {
+        status = Status.ACTIVATE;
         activateUserService.getUserById(update);
     }
 
@@ -221,13 +212,13 @@ public class TelegramBotService {
         mapFunc.put(key, value);
     }
 
-    public void onStartActionDoing(Long chatId) {
+    public void onStartActionDoing(Update update) {
         sendMessage.setReplyMarkup(keyboardBotService.createMainKeyboard());
-        sendMessage(chatId, START_TEXT);
+        sendMessage(update.getMessage().getChatId(), START_TEXT);
     }
 
-    public void onHelpDoing(Long chatId) {
-        sendMessage(chatId, HELP_TEXT);
+    public void onHelpDoing(Update update) {
+        sendMessage(update.getMessage().getChatId(), HELP_TEXT);
     }
 
     public void onRegisterActionDoing(Update update) {

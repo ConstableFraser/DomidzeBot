@@ -1,7 +1,6 @@
 package org.shvedchikov.domidzebot.service;
 
-import static org.shvedchikov.domidzebot.service.TelegramBotService.Status;
-
+import org.shvedchikov.domidzebot.util.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.shvedchikov.domidzebot.config.BotConfig;
 import org.shvedchikov.domidzebot.repository.UserRepository;
@@ -39,12 +38,12 @@ public class ActivateUserService {
     }
 
     protected Status setUserById(Update update) {
-        var userId = Long.valueOf(update.getMessage().getText());
         if (!tgId.equals(botConfig.getIdAdmin())) {
             log.warn("You are not a Admin. Id: " + tgId);
             return Status.DEFAULT;
         }
         SendMessage sendMessage = new SendMessage();
+        var userId = Long.valueOf(update.getMessage().getText());
         var user = userRepository.findByUserTelegramId(userId);
         if (user.isEmpty()) {
             sendMessage.setChatId(chatId);
@@ -52,7 +51,6 @@ public class ActivateUserService {
             telegramBotService.sendMessage(sendMessage);
             return Status.DEFAULT;
         }
-
         user.get().setEnable(true);
         if (!userRepository.save(user.get()).isEnable()) {
             sendMessage.setChatId(chatId);
