@@ -8,12 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-
 @Slf4j
 @Service
 public class ActivateUserService {
-    private TelegramBotService telegramBotService;
     private Long chatId;
     private Long tgId;
 
@@ -23,48 +20,35 @@ public class ActivateUserService {
     @Autowired
     private BotConfig botConfig;
 
-    protected void getUserById(Update update) {
+    protected void getUserById(TelegramBotService telegramBotService, Update update) {
         tgId = update.getMessage().getFrom().getId();
         if (!tgId.equals(botConfig.getIdAdmin())) {
             log.warn("You are not a Admin. Id: " + tgId);
             return;
         }
-        SendMessage sendMessage = new SendMessage();
         chatId = update.getMessage().getChatId();
         telegramBotService.setStatus(Status.ACTIVATE);
-        sendMessage.setChatId(chatId);
-        sendMessage.setText("->>");
-        telegramBotService.sendMessage(sendMessage);
+        telegramBotService.sendMessage(chatId, "->>");
     }
 
-    protected Status setUserById(Update update) {
+    protected Status setUserById(TelegramBotService telegramBotService, Update update) {
+        tgId = update.getMessage().getFrom().getId();
         if (!tgId.equals(botConfig.getIdAdmin())) {
             log.warn("You are not a Admin. Id: " + tgId);
             return Status.DEFAULT;
         }
-        SendMessage sendMessage = new SendMessage();
         var userId = Long.valueOf(update.getMessage().getText());
         var user = userRepository.findByUserTelegramId(userId);
         if (user.isEmpty()) {
-            sendMessage.setChatId(chatId);
-            sendMessage.setText("user not found");
-            telegramBotService.sendMessage(sendMessage);
+            telegramBotService.sendMessage(chatId, "user not found");
             return Status.DEFAULT;
         }
         user.get().setEnable(true);
         if (!userRepository.save(user.get()).isEnable()) {
-            sendMessage.setChatId(chatId);
-            sendMessage.setText("user wasn't activated");
-            telegramBotService.sendMessage(sendMessage);
+            telegramBotService.sendMessage(chatId, "user wasn't activated");
             return Status.DEFAULT;
         }
-        sendMessage.setChatId(chatId);
-        sendMessage.setText("[+] success");
-        telegramBotService.sendMessage(sendMessage);
+        telegramBotService.sendMessage(chatId, "[+] success");
         return Status.DEFAULT;
-    }
-
-    protected void setTelegramBot(TelegramBotService telegramBotService) {
-        this.telegramBotService = telegramBotService;
     }
 }

@@ -19,7 +19,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,8 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class TelegramBotService {
-    private final Map<Status, Function<Update, Status>> mapFunc = new HashMap<>();
-    private final SendMessage sendMessage = new SendMessage();
+    private final Map<Status, BiFunction<TelegramBotService, Update, Status>> mapFunc = new HashMap<>();
     private TelegramBot telegramBot;
 
     @Getter
@@ -63,17 +62,12 @@ public class TelegramBotService {
             [СЕРВИС УВЕДОМЛЕНИЙ О БРОНИРОВАНИЯХ]
 
             Добро пожаловать! Телеграм бот помогает собственникам следить за событиями по бронированию.
-            Для этого нужно:
-            1. зарегистрироваться
-            2. настроить уведомления
+            Чтобы начать пользоваться, пройдите регистрацию.
+            После чего будут доступны полезные функции.
 
             /register - регистрация владельца
-            /monthminus - на месяц вперёд без денег
-            /month - на месяц вперёд (+деньги)
-            /halfyear - на полгода вперёд (+деньги)
-            /monthprev - на месяц назад (+деньги)
-            /halfyearprev - на полгода назад (+деньги)
-            /help - справка""";
+            /help - справка
+            """;
 
     private static final String HELP_TEXT = """
             [СЕРВИС УВЕДОМЛЕНИЙ О БРОНИРОВАНИЯХ]
@@ -82,17 +76,19 @@ public class TelegramBotService {
             🔹регистрация собственника
             🔹информирование о бронированиях
 
+            /register - регистрация владельца
+            /monthminus - на месяц вперёд без денег
+            /month - на месяц вперёд (+деньги)
+            /halfyear - на полгода вперёд (+деньги)
+            /monthprev - на месяц назад (+деньги)
+            /halfyearprev - на полгода назад (+деньги)
+
             Контактная информация:
             🔮 @sanswed
             """;
 
     @PostConstruct
     private void setTelegramService() {
-        registerUserBotService.setTelegramBot(this);
-        activateUserService.setTelegramBot(this);
-        controlHashService.setTelegramBot(this);
-        coderService.setTelegramBot(this);
-        orderService.setTelegramBot(this);
         mapFunc.put(Status.FINISHEDREGISTER, registerUserBotService::startCompleteRegister);
         mapFunc.put(Status.LASTNAME, registerUserBotService::getLastName);
         mapFunc.put(Status.HOUSENUMBER, registerUserBotService::getHouse);
@@ -106,7 +102,6 @@ public class TelegramBotService {
         mapFunc.put(Status.DECODESTRING, coderService::decodeString);
         mapFunc.put(Status.LOGIN, registerUserBotService::getLogin);
         mapFunc.put(Status.EMAIL, registerUserBotService::getEmail);
-        mapFunc.put(Status.BNOVO, registerUserBotService::setBnovo);
         mapFunc.put(Status.NAME, registerUserBotService::getName);
         mapFunc.put(Status.ENCODEPWD, coderService::encodePwd);
         mapFunc.put(Status.DECODEPWD, coderService::decodePwd);
@@ -116,43 +111,38 @@ public class TelegramBotService {
 
     private void prompt(Update update) {
         var idCurrent = update.getMessage().getFrom().getId();
-        if (botConfig.isNoAdmin(idCurrent)) {
-            log.warn("You are not an Admin. Id: " + idCurrent);
+        if (!botConfig.isAdmin(idCurrent)) {
+            log.warn("You are not an Admin. Id: {}", idCurrent);
             return;
         }
-        var sendMessage = new SendMessage();
-        sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText("->>");
-        sendMessage(sendMessage);
+        sendMessage(update.getMessage().getChatId(), "->>");
     }
 
     public void onGetListUsers(Update update) {
         var idCurrent = update.getMessage().getFrom().getId();
-        if (botConfig.isNoAdmin(idCurrent)) {
-            log.warn("You are not an Admin. Id: " + idCurrent);
+        if (!botConfig.isAdmin(idCurrent)) {
+            log.warn("You are not an Admin. Id: {}", idCurrent);
             return;
         }
         var users = userRepository.findAll().stream()
-                .map(user -> user.getUsername() + " | " + user.getFirstName() + " | " +  user.getLastName())
+                .map(user -> String.join(" | ",
+                        user.getUsername(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        String.valueOf(user.getUserTelegramId())))
                 .collect(Collectors.joining("\n"));
-
-        var sendMessage = new SendMessage();
-        sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText(users);
-        sendMessage(sendMessage);
+        sendMessage(update.getMessage().getChatId(), users);
     }
 
     public void onSetPeriodByUser(Update update) {
-        orderService.getDates(update);
+        orderService.getDates(this, update);
     }
 
     public void onGetPeriod(Update update) {
         var user = userRepository.findByUserTelegramId(update.getMessage().getFrom().getId());
         if (user.isEmpty() || !user.get().isEnabled()) {
-            log.warn("Attempt to request period: " + update.getMessage().getFrom().getId());
-            sendMessage.setChatId(update.getMessage().getChatId());
-            sendMessage.setText("Требуется регистрация");
-            sendMessage(sendMessage);
+            log.warn("Attempt to request period: {}", update.getMessage().getFrom().getId());
+            sendMessage(update.getMessage().getChatId(), "Требуется регистрация");
             return;
         }
         var command = update.getMessage().getText().replace("/", "").toUpperCase();
@@ -165,9 +155,7 @@ public class TelegramBotService {
             startDate = endDate.minusMonths(countMonth);
         }
         var withPrice = !Command.MONTHMINUS.equals(Command.valueOf(command));
-        sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText(orderService.getInfoOrders(user.get(), startDate, endDate, withPrice));
-        sendMessage(sendMessage);
+        sendMessage(update.getMessage().getChatId(), orderService.getOrders(user.get(), startDate, endDate, withPrice));
     }
 
     public void onSetHash(Update update) {
@@ -176,7 +164,7 @@ public class TelegramBotService {
     }
 
     public void onGetHash(Update update) {
-        controlHashService.getHash(update);
+        controlHashService.getHash(this, update);
     }
 
     public void onEncodeString(Update update) {
@@ -201,20 +189,23 @@ public class TelegramBotService {
 
     public void onActiveUser(Update update) {
         status = Status.ACTIVATE;
-        activateUserService.getUserById(update);
+        activateUserService.getUserById(this, update);
     }
 
     public void setTelegramBot(TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
     }
 
-    protected void setFunc(Status key, Function<Update, Status> value) {
+    protected void setFunc(Status key, BiFunction<TelegramBotService, Update, Status> value) {
         mapFunc.put(key, value);
     }
 
     public void onStartActionDoing(Update update) {
+        var sendMessage = new SendMessage();
         sendMessage.setReplyMarkup(keyboardBotService.createMainKeyboard());
-        sendMessage(update.getMessage().getChatId(), START_TEXT);
+        sendMessage.setText(START_TEXT);
+        sendMessage.setChatId(update.getMessage().getChatId());
+        sendMessage(sendMessage);
     }
 
     public void onHelpDoing(Update update) {
@@ -223,33 +214,31 @@ public class TelegramBotService {
 
     public void onRegisterActionDoing(Update update) {
         status = Status.DEFAULT;
-        registerUserBotService.welcomeToRegister(update);
+        registerUserBotService.welcomeToRegister(this, update);
     }
 
     public void onUnknownActionDoing(Update update) {
         if (status == Status.DEFAULT) {
-            log.warn("Unknown command: " + update.getMessage().getText());
+            log.warn("Unknown command: {}", update.getMessage().getText());
             sendMessage(update.getMessage().getChatId(), "нераспознанная команда");
             return;
         }
-        status = mapFunc.getOrDefault(status, (e) -> {
-                    log.warn(
-                            this.getClass().getSimpleName() + ": not found the method during setting the property");
+        status = mapFunc.getOrDefault(status, (t, e) -> {
+            log.warn("{}: not found the method during setting the property", this.getClass().getSimpleName());
                     return Status.DEFAULT;
                 }
-        ).apply(update);
+        ).apply(this, update);
     }
 
     public void callBackQuery(Update update) {
         var id = update.getCallbackQuery().getData();
         status = Status.valueOf(id);
 
-        this.status = mapFunc.getOrDefault(status, (e) -> {
-                    log.warn(
-                            this.getClass().getSimpleName() + ": not found method on CallbackQuery");
+        this.status = mapFunc.getOrDefault(status, (t, e) -> {
+            log.warn("{}: not found method on CallbackQuery", this.getClass().getSimpleName());
                     return Status.DEFAULT;
                 }
-        ).apply(update);
+        ).apply(this, update);
     }
 
     public int sendMessage(SendMessage sendMessage) {
@@ -258,6 +247,13 @@ public class TelegramBotService {
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int sendMessage(Long chatId, String messageText) {
+        var sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(messageText);
+        return sendMessage(sendMessage);
     }
 
     public void sendMessage(EditMessageText editMessageText) {
@@ -274,11 +270,5 @@ public class TelegramBotService {
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void sendMessage(Long chatId, String messageText) {
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(messageText);
-        sendMessage(sendMessage);
     }
 }

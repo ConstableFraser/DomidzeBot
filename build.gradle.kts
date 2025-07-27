@@ -28,7 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security:3.3.4")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.3.3")
 	testImplementation("org.springframework.security:spring-security-test:6.3.3")
-	implementation("org.postgresql:postgresql:42.7.4")
+	implementation("org.postgresql:postgresql:42.7.7")
 	implementation("org.mapstruct:mapstruct:1.6.2")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.1")
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")

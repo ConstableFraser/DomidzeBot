@@ -18,7 +18,9 @@ public class CodingDecodingTest {
 
     @BeforeAll
     public static void setUp() {
-        System.setProperty("DHASH", "REM8OEJITUl1fDc0P02NeDcyR0tNO4era01CRU1KRT88MVBRRUU7OjE7PUpsbUs2RTRNNjFa");
+        System.setProperty(
+                "DHASH",
+                "djM7MT82MzYxgkA9iYtLdzeFSESCpzCuOptoS0mLMjKRT1dLRTEwUDBINk5rSzVFQDVFP4kzNjE9OTM2MTQzlUg2M001RT42SFE=");
     }
 
     @Test

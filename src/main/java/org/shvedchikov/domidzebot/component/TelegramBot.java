@@ -38,7 +38,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         menuOfCommands.add(new BotCommand("/" + Command.HALFYEAR.name().toLowerCase(), "[+6 месяцев]"));
         menuOfCommands.add(new BotCommand("/" + Command.MONTHPREV.name().toLowerCase(), "[-1 месяц]"));
         menuOfCommands.add(new BotCommand("/" + Command.HALFYEARPREV.name().toLowerCase(), "[-6 месяцев]"));
-        menuOfCommands.add(new BotCommand("/" + Command.PERIOD.name().toLowerCase(), "указать вручную"));
+        menuOfCommands.add(new BotCommand("/" + Command.PERIOD.name().toLowerCase(), "[указать вручную]"));
         menuOfCommands.add(new BotCommand("/" + Command.HELP.name().toLowerCase(), "[справка]"));
         var myCommands = new SetMyCommands();
         myCommands.setCommands(menuOfCommands);

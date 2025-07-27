@@ -20,10 +20,10 @@ public class BotConfig {
     @Value(value = "${bot.admin}")
     private Long idAdmin;
 
-    public boolean isNoAdmin(Long userId) {
+    public boolean isAdmin(Long userId) {
         if (Objects.isNull(userId) || Objects.isNull(idAdmin)) {
-            return true;
+            return false;
         }
-        return !Objects.equals(idAdmin, userId);
+        return Objects.equals(idAdmin, userId);
     }
 }

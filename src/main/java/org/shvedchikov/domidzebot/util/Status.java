@@ -12,7 +12,6 @@ public enum Status {
     ACCEPTUSER,
     REJECTUSER,
     ETHNOMIR,
-    BNOVO,
     ACTIVATE,
     HASH,
     ENCODESTRING,

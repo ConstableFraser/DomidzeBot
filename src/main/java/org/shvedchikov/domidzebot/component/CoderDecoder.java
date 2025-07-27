@@ -26,7 +26,7 @@ public final class CoderDecoder {
         hash = System.getProperty("DHASH", "null");
         if (hash.equals("null")) {
             log.error("Dynamic property 'dhash' is not found");
-            throw new Exception("Dynamic property 'hash' is not found");
+            throw new Exception("Dynamic property 'dhash' is not found");
         }
 
         byte[] password = Base64.getDecoder().decode(encodeString(sourcePwd));
@@ -47,7 +47,7 @@ public final class CoderDecoder {
         hash = System.getProperty("DHASH", "null");
         if (hash.equals("null")) {
             log.error("Dynamic property 'dhash' is not found");
-            throw new Exception("Dynamic property 'hash' is not found");
+            throw new Exception("Dynamic property 'dhash' is not found");
         }
 
         byte[] password = Base64.getDecoder().decode(encodedPwd);

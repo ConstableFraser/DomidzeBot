@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.shvedchikov.domidzebot.util.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,16 +42,15 @@ public class KeyboardBotService {
         replyKeyboardMarkup.setOneTimeKeyboard(false);
 
         List<KeyboardRow> keyboard = new ArrayList<>();
-
         KeyboardRow keyboardFirstRow = new KeyboardRow();
-        keyboardFirstRow.add("/register");
-        keyboardFirstRow.add("/month");
-        keyboardFirstRow.add("/help");
+        keyboardFirstRow.add("/" + Command.MONTH.name().toLowerCase());
+        keyboardFirstRow.add("/" + Command.HALFYEAR.name().toLowerCase());
+        keyboardFirstRow.add("/" + Command.PERIOD.name().toLowerCase());
 
         KeyboardRow keyboardSecondRow = new KeyboardRow();
-        keyboardSecondRow.add("/halfyear");
-        keyboardSecondRow.add("/monthprev");
-        keyboardSecondRow.add("/halfyearprev");
+        keyboardSecondRow.add("/" + Command.MONTHPREV.name().toLowerCase());
+        keyboardSecondRow.add("/" + Command.HALFYEARPREV.name().toLowerCase());
+        keyboardSecondRow.add("/" + Command.REGISTER.name().toLowerCase());
 
         keyboard.add(keyboardFirstRow);
         keyboard.add(keyboardSecondRow);

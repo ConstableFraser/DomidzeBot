@@ -10,30 +10,24 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Slf4j
 @Service
 public class CoderService {
-    private TelegramBotService telegramBotService;
-
     @Autowired
     private CoderDecoder coderDecoder;
 
-    protected void setTelegramBot(TelegramBotService telegramBotService) {
-        this.telegramBotService = telegramBotService;
-    }
-
-    protected Status encodeString(Update update) {
+    protected Status encodeString(TelegramBotService telegramBotService, Update update) {
         var source = update.getMessage().getText();
         var result = CoderDecoder.encodeString(source);
         telegramBotService.sendMessage(update.getMessage().getChatId(), result);
         return Status.DEFAULT;
     }
 
-    protected Status decodeString(Update update) {
+    protected Status decodeString(TelegramBotService telegramBotService, Update update) {
         var source = update.getMessage().getText();
         var result = CoderDecoder.decodeString(source);
         telegramBotService.sendMessage(update.getMessage().getChatId(), result);
         return Status.DEFAULT;
     }
 
-    protected Status encodePwd(Update update) {
+    protected Status encodePwd(TelegramBotService telegramBotService, Update update) {
         var source = update.getMessage().getText();
         String result;
         try {
@@ -45,7 +39,7 @@ public class CoderService {
         return Status.DEFAULT;
     }
 
-    protected Status decodePwd(Update update) {
+    protected Status decodePwd(TelegramBotService telegramBotService, Update update) {
         var source = update.getMessage().getText();
         String result;
         try {
