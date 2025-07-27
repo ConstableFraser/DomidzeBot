@@ -55,10 +55,7 @@ jobs:
           POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
 
       - name: Publish code coverage
-        uses: paambaati/codeclimate-action@v3.2.0
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          JACOCO_SOURCE_PATH: src/main/java
+        uses: qltysh/qlty-action/coverage@v1
         with:
-          coverageCommand: ./gradlew jacocoTestReport
-          coverageLocations: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
+          token: ${{ secrets.CC_TEST_REPORTER_ID }}
+          files: reports/coverage.xml
