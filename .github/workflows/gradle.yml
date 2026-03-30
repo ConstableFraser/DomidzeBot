@@ -46,8 +46,10 @@ jobs:
           DDLAUTO: ${{ vars.DDLAUTO }}
           BOTADMIN: ${{ vars.BOTADMIN }}
           BOTTOKEN: ${{ secrets.BOTTOKEN }}
+          BOTENABLED: ${{ vars.BOTENABLED }}
           LOGFILENAME: ${{ vars.LOGFILENAME }}
           LOGFILEPATH: ${{ vars.LOGFILEPATH }}
+          INDEX: ${{ vars.INDEX }}
           POSTGRESQL_HOST: ${{ vars.POSTGRESQL_HOST }}
           POSTGRESQL_PORT: ${{ vars.POSTGRESQL_PORT }}
           POSTGRESQL_DBNAME: ${{ vars.POSTGRESQL_DBNAME }}
