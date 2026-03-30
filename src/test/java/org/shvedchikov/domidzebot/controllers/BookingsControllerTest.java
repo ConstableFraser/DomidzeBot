@@ -143,7 +143,7 @@ public class BookingsControllerTest {
 
     @Test
     public void testIndex(@Autowired BookingRepository bookingRepository) throws Exception {
-        final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         var booking = new Booking();
         booking.setCheckIn(LocalDate.now().plusDays(1));
         booking.setCheckOut(LocalDate.now().plusDays(3));
@@ -153,10 +153,12 @@ public class BookingsControllerTest {
         booking.setHouse(testHouse);
         booking.setProgram("2203/26");
         bookingRepository.save(booking);
+        var dateMinusYear = LocalDate.parse(LocalDate.now().minusYears(1).format(dtf), dtf).format(dtf);
+        var datePlusYear = LocalDate.parse(LocalDate.now().plusYears(1).format(dtf), dtf).format(dtf);
 
         var result = mockMvc.perform(get("/api/bookings").with(token)
-                        .param("checkInAfter", LocalDate.parse(LocalDate.now().minusYears(1).format(DTF), DTF).format(DTF))
-                        .param("checkInBefore", LocalDate.parse(LocalDate.now().plusYears(1).format(DTF), DTF).format(DTF))
+                        .param("checkInAfter", dateMinusYear)
+                        .param("checkInBefore", datePlusYear)
                 )
                 .andExpect(status().isOk())
                 .andReturn();

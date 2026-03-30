@@ -50,7 +50,7 @@ public class TelegramOrderServiceTest {
     private static final String ABSOLUTE_PATH = "src/test/resources/fixtures/";
     private static final Long CHAT_ID = 100_001L;
     private static final int SUCCESS = 1;
-    private static int AMOUNT_DAYS;
+    private static int amountDays;
     private static final String SUCCESS_TEXT = "Инициализация выполнена";
     private Message message;
     private Update update;
@@ -112,14 +112,14 @@ public class TelegramOrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        AMOUNT_DAYS = LocalDate.MAX.lengthOfYear() * botConfig.getIndex();
+        amountDays = LocalDate.MAX.lengthOfYear() * botConfig.getIndex();
         User tgUser = new User();
         Chat chat = new Chat();
         message = new Message();
         update = new Update();
-        Long ADMIN_ID = botConfig.getIdAdmin();
+        Long adminId = botConfig.getIdAdmin();
 
-        tgUser.setId(ADMIN_ID);
+        tgUser.setId(adminId);
         chat.setId(CHAT_ID);
         message.setFrom(tgUser);
         message.setChat(chat);
@@ -127,7 +127,7 @@ public class TelegramOrderServiceTest {
 
         var userModel = Instancio.of(modelGenerator.getUserModel()).create();
         userModel.setHouses(List.of());
-        userModel.setUserTelegramId(ADMIN_ID);
+        userModel.setUserTelegramId(adminId);
         userModel.setEnable(false);
         userId = userRepository.save(userModel).getId();
     }
@@ -320,8 +320,8 @@ public class TelegramOrderServiceTest {
     }
 
     public void init() {
-        var begin = LocalDate.now().minusDays(AMOUNT_DAYS);
-        var end = LocalDate.now().plusDays(AMOUNT_DAYS);
+        var begin = LocalDate.now().minusDays(amountDays);
+        var end = LocalDate.now().plusDays(amountDays);
 
         doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, SUCCESS_TEXT);
         doReturn(fixtureHtml).when(orderService).connectedToDomain(userId, begin, end);

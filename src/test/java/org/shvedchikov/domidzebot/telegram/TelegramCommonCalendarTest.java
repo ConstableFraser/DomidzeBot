@@ -45,10 +45,10 @@ public class TelegramCommonCalendarTest {
     private static final Long USER_ID = 131_101L;
     private static final int SUCCESS = 1;
     private static final String ABSOLUTE_PATH = "src/test/resources/fixtures/";
-    private static int AMOUNT_DAYS;
-    final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static int amountDays;
+    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String SUCCESS_TEXT = "Инициализация выполнена";
-    public static String fixtureHtml = "";
+    private static String fixtureHtml = "";
     private static final String PROMPT_TEXT = """
                 Установка брони с сайта. Укажите в формате:
 
@@ -93,14 +93,14 @@ public class TelegramCommonCalendarTest {
 
     @BeforeEach
     public void setUp() {
-        AMOUNT_DAYS = LocalDate.MAX.lengthOfYear() * botConfig.getIndex();
+        amountDays = LocalDate.MAX.lengthOfYear() * botConfig.getIndex();
         User tgUser = new User();
         Chat chat = new Chat();
         message = new Message();
         update = new Update();
-        Long ADMIN_ID = botConfig.getIdAdmin();
+        Long adminId = botConfig.getIdAdmin();
 
-        tgUser.setId(ADMIN_ID);
+        tgUser.setId(adminId);
         chat.setId(CHAT_ID);
         message.setFrom(tgUser);
         message.setChat(chat);
@@ -108,7 +108,7 @@ public class TelegramCommonCalendarTest {
 
         var userModel = Instancio.of(modelGenerator.getUserModel()).create();
         userModel.setHouses(List.of());
-        userModel.setUserTelegramId(ADMIN_ID);
+        userModel.setUserTelegramId(adminId);
         userId = userRepository.save(userModel).getId();
     }
 
@@ -121,23 +121,23 @@ public class TelegramCommonCalendarTest {
     @Test
     public void testCommandInitCalendarSuccess() {
         var calendar = commonCalendarService.getCommonCalendar();
-        var begin = LocalDate.now().minusDays(AMOUNT_DAYS);
-        var end = LocalDate.now().plusDays(AMOUNT_DAYS);
+        var begin = LocalDate.now().minusDays(amountDays);
+        var end = LocalDate.now().plusDays(amountDays);
 
         init();
 
         verify(telegramBotService, times(1)).sendMessage(CHAT_ID, SUCCESS_TEXT);
-        assertThat(calendar.size()).isEqualTo(AMOUNT_DAYS * 2 + 1);
-        assertThat(calendar.containsKey(begin.format(DTF))).isTrue();
-        assertThat(calendar.containsKey(begin.minusDays(1).format(DTF))).isFalse();
-        assertThat(calendar.containsKey(end.format(DTF))).isTrue();
-        assertThat(calendar.containsKey(end.plusDays(1).format(DTF))).isFalse();
+        assertThat(calendar.size()).isEqualTo(amountDays * 2 + 1);
+        assertThat(calendar.containsKey(begin.format(dtf))).isTrue();
+        assertThat(calendar.containsKey(begin.minusDays(1).format(dtf))).isFalse();
+        assertThat(calendar.containsKey(end.format(dtf))).isTrue();
+        assertThat(calendar.containsKey(end.plusDays(1).format(dtf))).isFalse();
         assertThat(commonCalendarService.getCountOfBookings(begin, end)).isEqualTo(7);
     }
 
     @Test
     public void testCommandSetPrice() {
-        var PROMPT_TEXT = """
+        var promptText = """
                 Установка стоимость брони. Одну или несколько.
                 Укажите в формате:
 
@@ -147,7 +147,7 @@ public class TelegramCommonCalendarTest {
                 12.01.2026|26600
                 12.02.2026|31200
                 """;
-        var CORRECT_PRICE = """
+        var correctPrice = """
                 29.04.2026|1700
                 01.06.2026|3200
                 31.05.2026|2900
@@ -155,37 +155,37 @@ public class TelegramCommonCalendarTest {
                 10.05.2026|11200
                 02.05.2026|290000
                 """;
-        var SUCCESS_MESSAGE = "Цены установлены";
+        var successMessage = "Цены установлены";
 
         //test: initialize and test correct set price
         init();
 
         verify(telegramBotService, times(1)).sendMessage(CHAT_ID, SUCCESS_TEXT);
-        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, PROMPT_TEXT);
+        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, promptText);
         message.setText(Command.SETPRICE.toString());
         update.setMessage(message);
         telegramBot.onUpdateReceived(update);
-        verify(telegramBotService, times(1)).sendMessage(CHAT_ID, PROMPT_TEXT);
+        verify(telegramBotService, times(1)).sendMessage(CHAT_ID, promptText);
         assertThat(telegramBotService.getStatus()).isEqualTo(Status.SETPRICE);
 
-        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, SUCCESS_MESSAGE);
-        message.setText(CORRECT_PRICE);
+        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, successMessage);
+        message.setText(correctPrice);
         update.setMessage(message);
         telegramBot.onUpdateReceived(update);
-        verify(telegramBotService, times(1)).sendMessage(CHAT_ID, SUCCESS_MESSAGE);
+        verify(telegramBotService, times(1)).sendMessage(CHAT_ID, successMessage);
         assertThat(telegramBotService.getStatus()).isEqualTo(Status.DEFAULT);
 
         //test: incorrect date set price
-        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, PROMPT_TEXT);
+        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, promptText);
         message.setText(Command.SETPRICE.toString());
         update.setMessage(message);
         telegramBot.onUpdateReceived(update);
-        var INCORRECT_DATA = """
+        var incorrectData = """
                 29.04.2026|1700
                 23.01.2026|3200
                 31.05.2026|2900
                 """;
-        message.setText(INCORRECT_DATA);
+        message.setText(incorrectData);
         update.setMessage(message);
         doReturn(SUCCESS).when(telegramBotService)
                 .sendMessage(CHAT_ID, "Ошибка в данных: 23.01.2026|3200\nзапустите команду заново");
@@ -195,16 +195,16 @@ public class TelegramCommonCalendarTest {
         assertThat(telegramBotService.getStatus()).isEqualTo(Status.DEFAULT);
 
         //test: incorrect date set price
-        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, PROMPT_TEXT);
+        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, promptText);
         message.setText(Command.SETPRICE.toString());
         update.setMessage(message);
         telegramBot.onUpdateReceived(update);
-        INCORRECT_DATA = """
+        incorrectData = """
                 29.12.2036|1700
                 23.11.2026|3200
                 31.05.2026|2900
                 """;
-        message.setText(INCORRECT_DATA);
+        message.setText(incorrectData);
         update.setMessage(message);
         doReturn(SUCCESS).when(telegramBotService)
                 .sendMessage(CHAT_ID, "В календаре нет даты: 29.12.2036|1700\nзапустите команду заново");
@@ -214,16 +214,16 @@ public class TelegramCommonCalendarTest {
         assertThat(telegramBotService.getStatus()).isEqualTo(Status.DEFAULT);
 
         //test: already exist booking
-        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, PROMPT_TEXT);
+        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, promptText);
         message.setText(Command.SETPRICE.toString());
         update.setMessage(message);
         telegramBot.onUpdateReceived(update);
-        INCORRECT_DATA = """
+        incorrectData = """
                 29.08.2026|1700
                 25.07.2026|3200
                 31.05.2026|2900
                 """;
-        message.setText(INCORRECT_DATA);
+        message.setText(incorrectData);
         update.setMessage(message);
         doReturn(SUCCESS).when(telegramBotService)
                 .sendMessage(CHAT_ID, "На дату уже есть бронь: 25.07.2026|3200\nзапустите команду заново");
@@ -233,16 +233,16 @@ public class TelegramCommonCalendarTest {
         assertThat(telegramBotService.getStatus()).isEqualTo(Status.DEFAULT);
 
         //test: error in price
-        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, PROMPT_TEXT);
+        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, promptText);
         message.setText(Command.SETPRICE.toString());
         update.setMessage(message);
         telegramBot.onUpdateReceived(update);
-        INCORRECT_DATA = """
+        incorrectData = """
                 29.08.2026|wgwgr
                 25.07.2026|3200
                 31.05.2026|2900
                 """;
-        message.setText(INCORRECT_DATA);
+        message.setText(incorrectData);
         update.setMessage(message);
         doReturn(SUCCESS).when(telegramBotService)
                 .sendMessage(CHAT_ID, "Ошибка в цене: 29.08.2026|wgwgr\nзапустите команду заново");
@@ -362,8 +362,8 @@ public class TelegramCommonCalendarTest {
     }
 
     public void init() {
-        var begin = LocalDate.now().minusDays(AMOUNT_DAYS);
-        var end = LocalDate.now().plusDays(AMOUNT_DAYS);
+        var begin = LocalDate.now().minusDays(amountDays);
+        var end = LocalDate.now().plusDays(amountDays);
 
         doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, SUCCESS_TEXT);
         doReturn(fixtureHtml).when(orderService).connectedToDomain(userId, begin, end);

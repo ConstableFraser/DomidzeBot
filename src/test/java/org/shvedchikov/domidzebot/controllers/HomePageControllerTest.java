@@ -37,7 +37,7 @@ public class HomePageControllerTest {
 
     @Test
     public void testHomePageController() throws Exception {
-        int AMOUNT_DAYS = LocalDate.MAX.lengthOfYear() * botConfig.getIndex();
+        int amountDays = LocalDate.MAX.lengthOfYear() * botConfig.getIndex();
         var request = get("/");
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -52,11 +52,11 @@ public class HomePageControllerTest {
         var calendar = (LinkedList<LinkedHashMap<String, String>>) model.get("calendar");
         var firstElement = LocalDate.now().getDayOfWeek() == DayOfWeek.MONDAY
                 ? LocalDate.now() : LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue() - 1);
-        var lastElement = firstElement.plusDays(AMOUNT_DAYS);
+        var lastElement = firstElement.plusDays(amountDays);
 
         assertThat(calendar.get(0).containsKey(firstElement.format(DTF))).isTrue();
         assertThat(calendar.get(0).containsKey(firstElement.minusDays(1).format(DTF))).isFalse();
-        assertThat(calendar.get(calendar.size()-1).containsKey(lastElement.format(DTF))).isTrue();
-        assertThat(calendar.get(calendar.size()-1).containsKey(lastElement.plusDays(1).format(DTF))).isFalse();
+        assertThat(calendar.get(calendar.size() - 1).containsKey(lastElement.format(DTF))).isTrue();
+        assertThat(calendar.get(calendar.size() - 1).containsKey(lastElement.plusDays(1).format(DTF))).isFalse();
     }
 }

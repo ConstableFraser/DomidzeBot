@@ -58,7 +58,7 @@ class RequestBookingControllerTest {
     private static final int SUCCESS = 1;
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private String stringMessage;
-    private Integer AMOUNT_DAYS;
+    private Integer amountDays;
 
     @MockitoBean
     private BotInitializer botInitializer;
@@ -85,7 +85,7 @@ class RequestBookingControllerTest {
     private TelegramBot telegramBot;
 
     @MockitoSpyBean
-    OrderService orderService;
+    private OrderService orderService;
 
     @Autowired
     private BookingService bookingService;
@@ -97,20 +97,20 @@ class RequestBookingControllerTest {
     private BotConfig botConfig;
 
     @Autowired
-    DomainRepository domainRepository;
+    private DomainRepository domainRepository;
 
     @Autowired
-    CredentialRepository credentialRepository;
+    private CredentialRepository credentialRepository;
 
     @Autowired
-    BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
 
     @Autowired
-    HouseService houseService;
+    private HouseService houseService;
 
     @BeforeEach
     void setUp() {
-        AMOUNT_DAYS = LocalDate.MAX.lengthOfYear() * botConfig.getIndex();
+        amountDays = LocalDate.MAX.lengthOfYear() * botConfig.getIndex();
         System.setProperty(
                 "DHASH",
                 "djM7MT82MzYxgkA9iYtLdzeFSESCpzCuOptoS0mLMjKRT1dLRTEwUDBINk5rSzVFQDVFP4kzNjE9OTM2MTQzlUg2M001RT42SFE=");
@@ -152,7 +152,7 @@ class RequestBookingControllerTest {
         var houseModel = Instancio.of(modelGenerator.getHouseModel()).create();
         var bookingModel = Instancio.of(modelGenerator.getBookingModel()).create();
         var requestBookingDTO = Instancio.of(modelGenerator.getBookingModel()).create();
-        String NO_ORDERS = "Информация о бронях отсутствует";
+        String noOrders = "Информация о бронях отсутствует";
 
         domainModel.setHouses(List.of());
         var domain = domainRepository.save(domainModel);
@@ -183,9 +183,9 @@ class RequestBookingControllerTest {
         update.setMessage(message);
 
         doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, "Инициализация выполнена");
-        doReturn(NO_ORDERS).when(orderService).getOrders(userId,
-                LocalDate.now().minusDays(AMOUNT_DAYS),
-                LocalDate.now().plusDays(AMOUNT_DAYS));
+        doReturn(noOrders).when(orderService).getOrders(userId,
+                LocalDate.now().minusDays(amountDays),
+                LocalDate.now().plusDays(amountDays));
         commonCalendarService.calculateCalendar(update);
 
         var request = post("/api/booking")
@@ -260,7 +260,7 @@ class RequestBookingControllerTest {
     @Test
     public void testRequestForBookingSuccess() throws Exception {
         var requestBookingDTO = Instancio.of(modelGenerator.getBookingModel()).create();
-        String NO_ORDERS = "Информация о бронях отсутствует";
+        String noOrders = "Информация о бронях отсутствует";
         stringMessage = """
                 ⭐️ пришла бронь с сайта ⭐️
 
@@ -283,12 +283,12 @@ class RequestBookingControllerTest {
         var userId = userRepository.findByUserTelegramId(botConfig.getIdAdmin()).orElseThrow().getId();
 
         doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, "Инициализация выполнена");
-        doReturn(NO_ORDERS).when(orderService).getOrders(userId,
-                LocalDate.now().minusDays(AMOUNT_DAYS),
-                LocalDate.now().plusDays(AMOUNT_DAYS));
+        doReturn(noOrders).when(orderService).getOrders(userId,
+                LocalDate.now().minusDays(amountDays),
+                LocalDate.now().plusDays(amountDays));
         commonCalendarService.calculateCalendar(update);
 
-        var PROMPT_TEXT = """
+        var promptText = """
                 Установка стоимость брони. Одну или несколько.
                 Укажите в формате:
 
@@ -298,25 +298,25 @@ class RequestBookingControllerTest {
                 12.01.2026|26600
                 12.02.2026|31200
                 """;
-        var CORRECT_PRICE = String.join(
+        var correctPrice = String.join(
                 "\n",
                 LocalDate.now().plusDays(1).format(DTF) + "|" + requestBookingDTO.getPrice(),
                 LocalDate.now().plusDays(2).format(DTF) + "|" + requestBookingDTO.getPrice()
         );
-        var SUCCESS_MESSAGE = "Цены установлены";
+        var successMessage = "Цены установлены";
 
-        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, PROMPT_TEXT);
+        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, promptText);
         message.setText(Command.SETPRICE.toString());
         update.setMessage(message);
         telegramBot.onUpdateReceived(update);
-        verify(telegramBotService, times(1)).sendMessage(CHAT_ID, PROMPT_TEXT);
+        verify(telegramBotService, times(1)).sendMessage(CHAT_ID, promptText);
         assertThat(telegramBotService.getStatus()).isEqualTo(Status.SETPRICE);
 
-        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, SUCCESS_MESSAGE);
-        message.setText(CORRECT_PRICE);
+        doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, successMessage);
+        message.setText(correctPrice);
         update.setMessage(message);
         telegramBot.onUpdateReceived(update);
-        verify(telegramBotService, times(1)).sendMessage(CHAT_ID, SUCCESS_MESSAGE);
+        verify(telegramBotService, times(1)).sendMessage(CHAT_ID, successMessage);
         assertThat(telegramBotService.getStatus()).isEqualTo(Status.DEFAULT);
 
         var request = post("/api/booking")

@@ -14,7 +14,6 @@ import net.datafaker.Faker;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 @Component
@@ -29,7 +28,7 @@ public class ModelGenerator {
     private final Faker faker;
 
     public ModelGenerator() {
-        this.faker = new Faker( Locale.of("ru"));
+        this.faker = new Faker(Locale.of("ru"));
 
         userModel = Instancio.of(User.class)
                 .ignore(Select.field(User::getId))
@@ -57,8 +56,10 @@ public class ModelGenerator {
         bookingModel = Instancio.of(BookingCreateDTO.class)
                 .supply(Select.field(BookingCreateDTO::getCheckIn), () -> LocalDate.now().plusDays(1))
                 .supply(Select.field(BookingCreateDTO::getCheckOut), () -> LocalDate.now().plusDays(2))
-                .supply(Select.field(BookingCreateDTO::getPrice), () -> Double.valueOf(faker.number().numberBetween(14500, 99900)))
-                .supply(Select.field(BookingCreateDTO::getCountGuests), () -> Long.valueOf(faker.number().numberBetween(1, 10)))
+                .supply(Select.field(BookingCreateDTO::getPrice),
+                        () -> Double.valueOf(faker.number().numberBetween(14500, 99900)))
+                .supply(Select.field(BookingCreateDTO::getCountGuests),
+                        () -> Long.valueOf(faker.number().numberBetween(1, 10)))
                 .supply(Select.field(BookingCreateDTO::getMobileNumber), () -> faker.phoneNumber().phoneNumber())
                 .supply(Select.field(BookingCreateDTO::getProgram), () -> String.valueOf(faker.number().randomNumber()))
                 .toModel();
