@@ -27,7 +27,6 @@ public class ModelGenerator {
     private final Model<Credential> domainCredential;
     private final Model<BookingCreateDTO> bookingModel;
     private final Faker faker;
-    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public ModelGenerator() {
         this.faker = new Faker( Locale.of("ru"));

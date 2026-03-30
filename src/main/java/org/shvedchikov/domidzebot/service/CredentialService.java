@@ -61,7 +61,7 @@ public class CredentialService {
     }
 
     public void autoSignIn(Long id) {
-        var credential = credentialRepository.findById(id)
+        credentialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Credential with id: " + id + " not found"));
         //TODO for auto sign in;
     }
