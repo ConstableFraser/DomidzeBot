@@ -11,6 +11,8 @@ public class UserCreateDTO {
     private String firstName;
     private String lastName;
     private Long userTelegramId;
+    private Long chatId;
+    private boolean isEnable;
 
     @Email
     private String email;

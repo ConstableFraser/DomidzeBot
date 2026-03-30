@@ -2,13 +2,14 @@ package org.shvedchikov.domidzebot.telegram;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.shvedchikov.domidzebot.component.BotInitializer;
 import org.shvedchikov.domidzebot.component.TelegramBot;
 import org.shvedchikov.domidzebot.service.KeyboardBotService;
 import org.shvedchikov.domidzebot.service.TelegramBotService;
 import org.shvedchikov.domidzebot.util.Command;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -21,8 +22,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 public class TelegramCommonCommandTest {
+    @MockitoBean
+    private BotInitializer botInitializer;
+
     @Autowired
     private KeyboardBotService keyboardBotService;
 

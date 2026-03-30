@@ -1,0 +1,202 @@
+2026-03-28T15:38:42.279+03:00  WARN 171834 --- [DomidzeBot] [main] o.s.domidzebot.component.TelegramBot     : ⚠️ Bot commands not set: Unable to execute setMyCommands method
+2026-03-28T15:38:42.999+03:00 ERROR 171834 --- [DomidzeBot] [main] o.s.domidzebot.component.BotInitializer  : ❌ Failed to register Telegram bot
+
+org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException: Error removing old webhook
+	at org.telegram.telegrambots.util.WebhookUtils.clearWebhook(WebhookUtils.java:113) ~[telegrambots-6.9.7.1.jar:na]
+	at org.telegram.telegrambots.bots.TelegramLongPollingBot.clearWebhook(TelegramLongPollingBot.java:41) ~[telegrambots-6.9.7.1.jar:na]
+	at org.telegram.telegrambots.meta.TelegramBotsApi.registerBot(TelegramBotsApi.java:65) ~[telegrambots-meta-6.9.7.1.jar:na]
+	at org.shvedchikov.domidzebot.component.BotInitializer.init(BotInitializer.java:28) ~[main/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+	at org.springframework.context.event.ApplicationListenerMethodAdapter.doInvoke(ApplicationListenerMethodAdapter.java:382) ~[spring-context-6.2.0.jar:6.2.0]
+	at org.springframework.context.event.ApplicationListenerMethodAdapter.processEvent(ApplicationListenerMethodAdapter.java:254) ~[spring-context-6.2.0.jar:6.2.0]
+	at org.springframework.context.event.ApplicationListenerMethodAdapter.onApplicationEvent(ApplicationListenerMethodAdapter.java:173) ~[spring-context-6.2.0.jar:6.2.0]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:185) ~[spring-context-6.2.0.jar:6.2.0]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:178) ~[spring-context-6.2.0.jar:6.2.0]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:156) ~[spring-context-6.2.0.jar:6.2.0]
+	at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:454) ~[spring-context-6.2.0.jar:6.2.0]
+	at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:387) ~[spring-context-6.2.0.jar:6.2.0]
+	at org.springframework.boot.context.event.EventPublishingRunListener.ready(EventPublishingRunListener.java:109) ~[spring-boot-3.4.0.jar:3.4.0]
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$ready$6(SpringApplicationRunListeners.java:80) ~[spring-boot-3.4.0.jar:3.4.0]
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75) ~[na:na]
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:118) ~[spring-boot-3.4.0.jar:3.4.0]
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:112) ~[spring-boot-3.4.0.jar:3.4.0]
+	at org.springframework.boot.SpringApplicationRunListeners.ready(SpringApplicationRunListeners.java:80) ~[spring-boot-3.4.0.jar:3.4.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:332) ~[spring-boot-3.4.0.jar:3.4.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.0.jar:3.4.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.0.jar:3.4.0]
+	at org.shvedchikov.domidzebot.DomidzeBotApplication.main(DomidzeBotApplication.java:20) ~[main/:na]
+Caused by: org.telegram.telegrambots.meta.exceptions.TelegramApiException: Unable to execute deleteWebhook method
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1184) ~[telegrambots-6.9.7.1.jar:na]
+	at org.telegram.telegrambots.meta.bots.AbsSender.execute(AbsSender.java:61) ~[telegrambots-meta-6.9.7.1.jar:na]
+	at org.telegram.telegrambots.util.WebhookUtils.clearWebhook(WebhookUtils.java:108) ~[telegrambots-6.9.7.1.jar:na]
+	... 23 common frames omitted
+Caused by: java.net.UnknownHostException: api.telegram.org
+	at java.base/java.net.InetAddress$CachedAddresses.get(InetAddress.java:952) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName0(InetAddress.java:1663) ~[na:na]
+	at java.base/java.net.InetAddress.getAllByName(InetAddress.java:1528) ~[na:na]
+	at org.apache.http.impl.conn.SystemDefaultDnsResolver.resolve(SystemDefaultDnsResolver.java:45) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.apache.http.impl.conn.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:112) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.apache.http.impl.conn.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:376) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.apache.http.impl.execchain.MainClientExec.establishRoute(MainClientExec.java:393) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:236) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:186) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:89) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.apache.http.impl.execchain.RedirectExec.execute(RedirectExec.java:110) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.apache.http.impl.client.InternalHttpClient.doExecute(InternalHttpClient.java:185) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:83) ~[httpclient-4.5.14.jar:4.5.14]
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendHttpPostRequest(DefaultAbsSender.java:1216) ~[telegrambots-6.9.7.1.jar:na]
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendMethodRequest(DefaultAbsSender.java:1212) ~[telegrambots-6.9.7.1.jar:na]
+	at org.telegram.telegrambots.bots.DefaultAbsSender.sendApiMethod(DefaultAbsSender.java:1181) ~[telegrambots-6.9.7.1.jar:na]
+	... 25 common frames omitted
+
+2026-03-28T15:39:18.636+03:00 ERROR 171834 --- [DomidzeBot] [http-nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "java.util.Map.get(Object)" is null] with root cause
+
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "java.util.Map.get(Object)" is null
+	at org.shvedchikov.domidzebot.controller.RequestBookingController.booking(RequestBookingController.java:94) ~[main/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1088) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.33.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.33.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.servlet.resource.ResourceUrlEncodingFilter.doFilter(ResourceUrlEncodingFilter.java:66) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.authentication.www.BasicAuthenticationFilter.doFilterInternal(BasicAuthenticationFilter.java:181) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter.doFilterInternal(BearerTokenAuthenticationFilter.java:128) ~[spring-security-oauth2-resource-server-6.4.1.jar:6.4.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:131) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.4.1.jar:6.4.1]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:243) ~[spring-webmvc-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:238) ~[spring-security-config-6.4.1.jar:6.4.1]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.0.jar:6.2.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.33.jar:10.1.33]
+	at java.base/java.lang.Thread.run(Thread.java:1589) ~[na:na]
+
+2026-03-28T16:06:01.027+03:00  WARN 7368 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m14s401ms733µs621ns).
+2026-03-28T16:16:31.697+03:00  WARN 10137 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m2s664ms207µs718ns).
+2026-03-28T16:18:22.961+03:00  WARN 10137 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m13s291ms950µs972ns).
+2026-03-28T16:20:04.125+03:00  WARN 10137 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=59s414ms478µs904ns).
+2026-03-28T16:30:49.946+03:00  WARN 10137 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=10m8s911ms296µs746ns).
+2026-03-28T16:32:06.826+03:00  WARN 10137 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=46s492ms174µs700ns).
+2026-03-28T16:39:52.538+03:00  WARN 15110 --- [DomidzeBot] [Test worker] o.s.d.service.CommonCalendarService      : You are not an Admin. Id: 131101
+2026-03-28T16:53:07.154+03:00  WARN 18420 --- [DomidzeBot] [Test worker] o.s.d.service.CommonCalendarService      : You are not an Admin. Id: 131101
+2026-03-28T16:54:39.652+03:00  WARN 19233 --- [DomidzeBot] [Test worker] o.s.d.service.CommonCalendarService      : You are not an Admin. Id: 131101
+2026-03-28T16:55:14.487+03:00  WARN 19233 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=55s772ms658µs10ns).
+2026-03-28T17:00:14.784+03:00  WARN 21464 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=56s760ms377µs874ns).
+2026-03-28T17:01:51.729+03:00  WARN 21464 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m36s945ms203µs426ns).
+2026-03-28T17:07:05.266+03:00  WARN 23371 --- [DomidzeBot] [Test worker] o.s.d.service.CommonCalendarService      : You are not an Admin. Id: 131101
+2026-03-28T17:14:54.279+03:00  WARN 25192 --- [DomidzeBot] [Test worker] o.s.d.service.CommonCalendarService      : You are not an Admin. Id: 131101
+2026-03-28T17:22:38.281+03:00  WARN 29268 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=49s18ms896µs149ns).
+2026-03-28T17:23:53.486+03:00  WARN 29268 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m15s205ms79µs557ns).
+2026-03-28T17:24:50.629+03:00  WARN 30311 --- [DomidzeBot] [Test worker] o.s.d.service.CommonCalendarService      : You are not an Admin. Id: 131101
+2026-03-28T17:28:51.642+03:00  WARN 31942 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m5s220ms653µs377ns).
+2026-03-28T17:33:41.148+03:00  WARN 33805 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m2s737ms606µs582ns).
+2026-03-28T17:34:32.081+03:00  WARN 33805 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=50s933ms238µs726ns).
+2026-03-28T17:37:13.830+03:00  WARN 35158 --- [DomidzeBot] [Test worker] o.s.d.service.CommonCalendarService      : You are not an Admin. Id: 131101
+2026-03-28T17:40:20.093+03:00  WARN 36800 --- [DomidzeBot] [Test worker] o.s.d.service.CommonCalendarService      : You are not an Admin. Id: 131101
+2026-03-28T17:42:38.160+03:00  WARN 39115 --- [DomidzeBot] [Test worker] o.s.d.service.TelegramBotService         : You are not an Admin. Id: 101
+2026-03-28T17:42:38.314+03:00  WARN 39115 --- [DomidzeBot] [Test worker] o.s.d.service.ActivateUserService        : Attempt to getUserById. You are not a Admin. Id: 101
+2026-03-28T17:42:38.398+03:00  WARN 39115 --- [DomidzeBot] [Test worker] o.s.d.service.ActivateUserService        : Attempt to setUserById. You are not a Admin. Id: 101
+2026-03-28T17:42:39.358+03:00  WARN 39115 --- [DomidzeBot] [Test worker] o.s.d.service.CommonCalendarService      : You are not an Admin. Id: 131101
+2026-03-28T17:42:40.312+03:00  WARN 39115 --- [DomidzeBot] [Test worker] o.s.d.service.TelegramBotService         : Attempt to request period: 187639790
+2026-03-28T17:43:00.475+03:00  WARN 39115 --- [DomidzeBot] [Test worker] o.s.d.service.TelegramBotService         : Attempt to request period: 187639790
+2026-03-28T18:08:01.374+03:00  WARN 46705 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m34s647ms495µs604ns).
+2026-03-28T21:27:08.044+03:00  WARN 54720 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=51s256ms949µs616ns).
+2026-03-28T21:28:05.384+03:00  WARN 54720 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=57s340ms632µs876ns).
+2026-03-28T22:15:28.992+03:00  WARN 61105 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=2m22s33ms474µs413ns).
+2026-03-28T22:16:24.922+03:00  WARN 61105 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=55s930ms518µs842ns).
+2026-03-28T22:23:58.579+03:00  WARN 62108 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=2m4s498ms682µs209ns).
+2026-03-28T22:53:27.284+03:00  WARN 64726 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=47s841ms907µs198ns).
+2026-03-28T22:54:49.312+03:00  WARN 64726 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=48s966ms853µs988ns).
+2026-03-28T22:55:35.556+03:00  WARN 64726 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=46s242ms920µs927ns).
+2026-03-28T23:00:18.073+03:00  WARN 64726 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=4m42s517ms422µs400ns).
+2026-03-28T23:23:10.284+03:00  WARN 66689 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m30s696ms6µs72ns).
+2026-03-28T23:24:35.217+03:00  WARN 66689 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=1m24s932ms773µs751ns).
+2026-03-28T23:34:35.638+03:00  WARN 67450 --- [DomidzeBot] [HikariCP housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Thread starvation or clock leap detected (housekeeper delta=2m47s400ms518µs221ns).

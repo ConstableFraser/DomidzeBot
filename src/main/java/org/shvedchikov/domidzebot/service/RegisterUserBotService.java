@@ -368,11 +368,13 @@ public class RegisterUserBotService {
     }
 
     private boolean createProfile(Update update) {
+        var chatId = getChatId(update);
         var tgId = getTgId(update);
         userCreateDTO.setUserTelegramId(tgId);
         var pwd = String.valueOf(Math.round(Math.random() * Integer.MAX_VALUE / 2)) + System.currentTimeMillis();
         userCreateDTO.setPassword(CoderDecoder.encodeString(pwd));
         userCreateDTO.setPassword(pwd);
+        userCreateDTO.setChatId(chatId);
         var user = userService.create(userCreateDTO);
         var credential = credentialService.create(credentialCreateDTO);
         houseCreateDTO.setOwnerId(user.getId());

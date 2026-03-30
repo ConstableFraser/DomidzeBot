@@ -3,6 +3,7 @@ package org.shvedchikov.domidzebot.telegram;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.shvedchikov.domidzebot.component.BotInitializer;
 import org.shvedchikov.domidzebot.component.TelegramBot;
 import org.shvedchikov.domidzebot.dto.user.UserCreateDTO;
 import org.shvedchikov.domidzebot.repository.DomainRepository;
@@ -16,6 +17,7 @@ import org.shvedchikov.domidzebot.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -84,6 +86,9 @@ public class TelegramRegisterProcessTest {
                 }
             }
     );
+
+    @MockitoBean
+    private BotInitializer botInitializer;
 
     @Autowired
     private UserService userService;
@@ -184,6 +189,7 @@ public class TelegramRegisterProcessTest {
         data.setLastName("Cute");
         data.setEmail("alya@wgw3ag.com");
         data.setUserTelegramId(DUPLICATE_ID);
+        data.setChatId(1000L);
         data.setPassword("password");
         userService.create(data);
 

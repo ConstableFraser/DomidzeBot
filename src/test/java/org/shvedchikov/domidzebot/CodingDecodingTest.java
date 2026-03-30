@@ -2,9 +2,11 @@ package org.shvedchikov.domidzebot;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.shvedchikov.domidzebot.component.BotInitializer;
 import org.shvedchikov.domidzebot.component.CoderDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.shvedchikov.domidzebot.component.CoderDecoder.encodeString;
@@ -13,6 +15,9 @@ import static org.shvedchikov.domidzebot.component.CoderDecoder.decodeString;
 
 @SpringBootTest
 public class CodingDecodingTest {
+    @MockitoBean
+    private BotInitializer botInitializer;
+
     @Autowired
     private CoderDecoder coderDecoder;
 

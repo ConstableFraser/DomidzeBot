@@ -48,6 +48,9 @@ public class User implements UserDetails {
     private Long userTelegramId;
 
     @NotNull
+    private Long chatId;
+
+    @NotNull
     @Column(unique = true)
     @Email
     private String email;

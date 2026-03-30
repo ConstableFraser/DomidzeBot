@@ -5,6 +5,7 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.shvedchikov.domidzebot.component.BotInitializer;
 import org.shvedchikov.domidzebot.exception.ResourceNotFoundException;
 import org.shvedchikov.domidzebot.model.User;
 import org.shvedchikov.domidzebot.repository.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
@@ -36,6 +38,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UsersControllerTest {
+    @MockitoBean
+    private BotInitializer botInitializer;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -66,9 +71,10 @@ public class UsersControllerTest {
         userRepository.save(testUser);
 
         testUserForUpdateDelete = new User();
-        testUserForUpdateDelete.setFirstName("mail@mail.com");
+        testUserForUpdateDelete.setFirstName("bot@domidze.ru");
         testUserForUpdateDelete.setEmail("mail@mail.com");
         testUserForUpdateDelete.setPasswordDigest("qwerty");
+        testUserForUpdateDelete.setChatId(1000L);
         userRepository.save(testUserForUpdateDelete);
     }
 
@@ -136,6 +142,7 @@ public class UsersControllerTest {
         data.put("firstName", "noname.user");
 
         var request = put("/api/users/" + testUserForUpdateDelete.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -153,6 +160,7 @@ public class UsersControllerTest {
     public void testDelete() throws Exception {
         var id = testUserForUpdateDelete.getId();
         var request = delete("/api/users/" + testUserForUpdateDelete.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(request)

@@ -3,6 +3,7 @@ package org.shvedchikov.domidzebot.telegram;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.shvedchikov.domidzebot.component.BotInitializer;
 import org.shvedchikov.domidzebot.component.TelegramBot;
 import org.shvedchikov.domidzebot.config.BotConfig;
 import org.shvedchikov.domidzebot.dto.user.UserCreateDTO;
@@ -12,8 +13,8 @@ import org.shvedchikov.domidzebot.service.UserService;
 import org.shvedchikov.domidzebot.util.Command;
 import org.shvedchikov.domidzebot.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -28,8 +29,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 public class TelegramAdminCommandTest {
+    @MockitoBean
+    private BotInitializer botInitializer;
+
     @Autowired
     private BotConfig botConfig;
 
@@ -182,6 +185,7 @@ public class TelegramAdminCommandTest {
         data.setEmail("data1@wgw3ag.com");
         data.setUserTelegramId(telegramId);
         data.setPassword("password");
+        data.setChatId(1000L);
         userService.create(data);
         // positive activate
         message.setText(String.valueOf(telegramId));
@@ -240,6 +244,7 @@ public class TelegramAdminCommandTest {
         data.setEmail("alya@wgw3ag.com");
         data.setUserTelegramId(31313L);
         data.setPassword("password");
+        data.setChatId(1000L);
         userService.create(data);
         data.setFirstName("Jack");
         data.setLastName("Jordon");

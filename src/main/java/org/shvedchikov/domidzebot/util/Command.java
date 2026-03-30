@@ -21,7 +21,11 @@ public enum Command {
     ENCODEPWD,
     DECODEPWD,
     USERS,
-    NOTEXIST;
+    NOTEXIST,
+    INIT, //first initialize common calendar. Past and Future
+    BOOKING,
+    SETPRICE,
+    UPDATE; // update common calendar. Only future
 
     public static Optional<Command> getCommand(String name) {
         return Arrays.stream(Command.values())

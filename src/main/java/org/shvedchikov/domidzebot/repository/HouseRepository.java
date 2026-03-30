@@ -1,5 +1,6 @@
 package org.shvedchikov.domidzebot.repository;
 
+import jakarta.validation.constraints.NotNull;
 import org.shvedchikov.domidzebot.model.House;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.NativeQuery;
@@ -30,4 +31,6 @@ public interface HouseRepository extends JpaRepository<House, Long> {
                 ON h.owner_id = users.id
             WHERE users.id = ?1""")
     List<Map<String, Object>> findAllByOwner(Long userId);
+
+    @NotNull House findHouseByNumber(Integer number);
 }

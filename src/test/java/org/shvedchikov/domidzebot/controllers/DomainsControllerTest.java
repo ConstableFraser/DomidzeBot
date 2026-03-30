@@ -5,6 +5,7 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.shvedchikov.domidzebot.component.BotInitializer;
 import org.shvedchikov.domidzebot.exception.ResourceNotFoundException;
 import org.shvedchikov.domidzebot.model.Domain;
 import org.shvedchikov.domidzebot.repository.DomainRepository;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
@@ -38,6 +40,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DomainsControllerTest {
     private static SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
     private static Domain testDomain;
+
+    @MockitoBean
+    private BotInitializer botInitializer;
 
     @Autowired
     private MockMvc mockMvc;

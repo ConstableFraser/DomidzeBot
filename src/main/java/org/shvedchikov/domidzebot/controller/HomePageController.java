@@ -1,35 +1,28 @@
 package org.shvedchikov.domidzebot.controller;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
+import org.shvedchikov.domidzebot.service.CommonCalendarService;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
 
-import java.net.URI;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-@RestController
-@PropertySource(value = "classpath:application.properties")
+@Controller
+@RequestMapping("/")
 public class HomePageController {
-    @Value("${spring.application.name}")
-    private String name;
+    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private final CommonCalendarService commonCalendarService;
 
-    @Value("${spring.application.version}")
-    private String version;
-
-    @GetMapping(path = "/welcome")
-    public String welcome() {
-        return "\uD83C\uDFE0 Welcome to "
-                + name + "! \uD83C\uDFE0"
-                + "<div><a href=\"https://www.t.me/" + name + "\">" + "@" + name + "</a></div>"
-                + "<br><br>version: " + version;
+    public HomePageController(CommonCalendarService commonCalendarService) {
+        this.commonCalendarService = commonCalendarService;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Void> home() {
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create("/welcome"))
-                .build();
+    @GetMapping("")
+    public String index(Model model) {
+        model.addAttribute("calendar", commonCalendarService.getTableOfCalendar());
+        model.addAttribute("nextMonthDate", LocalDate.now().plusMonths(1).format(DTF));
+        return "index";
     }
 }

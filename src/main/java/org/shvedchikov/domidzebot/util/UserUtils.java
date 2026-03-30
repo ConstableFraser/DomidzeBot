@@ -14,8 +14,8 @@ public class UserUtils {
     private UserRepository userRepository;
 
     public boolean isCurrentUser(Long userId) {
-        var userEmail = userRepository.findById(userId).orElseThrow().getEmail();
+        var userName = userRepository.findById(userId).orElseThrow().getFirstName();
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userEmail.equals(authentication.getName());
+        return userName.equals(authentication.getName());
     }
 }

@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class ActivateUserService {
     private Long chatId;
     private Long tgId;
+    private final String logtext = "You are not a Admin. Id: {}";
 
     @Autowired
     private UserRepository userRepository;
@@ -23,7 +24,7 @@ public class ActivateUserService {
     protected void getUserById(TelegramBotService telegramBotService, Update update) {
         tgId = update.getMessage().getFrom().getId();
         if (!tgId.equals(botConfig.getIdAdmin())) {
-            log.warn("You are not a Admin. Id: " + tgId);
+            log.warn("Attempt to getUserById. " + logtext, tgId);
             return;
         }
         chatId = update.getMessage().getChatId();
@@ -34,7 +35,7 @@ public class ActivateUserService {
     protected Status setUserById(TelegramBotService telegramBotService, Update update) {
         tgId = update.getMessage().getFrom().getId();
         if (!tgId.equals(botConfig.getIdAdmin())) {
-            log.warn("You are not a Admin. Id: " + tgId);
+            log.warn("Attempt to setUserById. " + logtext, tgId);
             return Status.DEFAULT;
         }
         var userId = Long.valueOf(update.getMessage().getText());
@@ -45,7 +46,7 @@ public class ActivateUserService {
         }
         user.get().setEnable(true);
         if (!userRepository.save(user.get()).isEnable()) {
-            telegramBotService.sendMessage(chatId, "user wasn't activated");
+            telegramBotService.sendMessage(chatId, "the user has not been activated");
             return Status.DEFAULT;
         }
         telegramBotService.sendMessage(chatId, "[+] success");

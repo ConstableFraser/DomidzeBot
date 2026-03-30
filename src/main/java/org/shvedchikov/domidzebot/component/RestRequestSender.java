@@ -1,6 +1,7 @@
 package org.shvedchikov.domidzebot.component;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import java.util.Collections;
 
 @Component
 public class RestRequestSender {
+    @Setter
     private String host;
     private final RestTemplate restTemplate;
     private HttpHeaderCreator httpHeaderCreator;
@@ -27,10 +29,6 @@ public class RestRequestSender {
 
     public void setHeaders(String username, String password, LocalDate startDate, LocalDate endDate) {
         this.httpHeaderCreator = new HttpHeaderCreator(username, password, startDate, endDate);
-    }
-
-    public void setHost(String host) {
-        this.host = host;
     }
 
     @Getter

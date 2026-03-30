@@ -10,6 +10,7 @@ import java.util.Date;
 @Setter
 public class UserDTO {
     private Long id;
+    private Long chatId;
     private Long userTelegramId;
     private String email;
     private String firstName;

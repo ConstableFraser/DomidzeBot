@@ -19,5 +19,7 @@ public enum Status {
     ENCODEPWD,
     DECODEPWD,
     SETPERIOD,
+    SETBOOKING,
+    SETPRICE,
     DEFAULT
 }

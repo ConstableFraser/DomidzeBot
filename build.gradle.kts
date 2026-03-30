@@ -1,10 +1,17 @@
 plugins {
 	application
+    id("java")
 	id("checkstyle")
 	id("jacoco")
 	id("org.springframework.boot") version "3.4.0"
 	id("io.spring.dependency-management") version "1.1.6"
 	id("io.freefair.lombok") version "8.6"
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(19))
+    }
 }
 
 group = "org.shvedchikov"
@@ -32,13 +39,17 @@ dependencies {
 	implementation("org.mapstruct:mapstruct:1.6.2")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.1")
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
-	implementation("org.telegram:telegrambots:6.9.7.0")
+	implementation("org.telegram:telegrambots-spring-boot-starter:6.9.7.1")
 	testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.3")
 	implementation("org.jsoup:jsoup:1.19.1")
 	implementation("org.instancio:instancio-junit:5.0.2")
 	testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.7")
 	implementation("net.datafaker:datafaker:2.3.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.webjars:bootstrap:5.3.3")
+    implementation("org.webjars:webjars-locator-core")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 }
 
 tasks.withType<Test> {

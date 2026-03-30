@@ -20,6 +20,9 @@ public class BotConfig {
     @Value(value = "${bot.admin}")
     private Long idAdmin;
 
+    @Value(value = "${calendar.amount.days.index}")
+    private Integer index;
+
     public boolean isAdmin(Long userId) {
         if (Objects.isNull(userId) || Objects.isNull(idAdmin)) {
             return false;

@@ -25,7 +25,7 @@ public final class CoderDecoder {
     public String encodePwd(String sourcePwd) throws Exception {
         hash = System.getProperty("DHASH", "null");
         if (hash.equals("null")) {
-            log.error("Dynamic property 'dhash' is not found");
+            log.error("encodePwd. Dynamic property 'dhash' is not found");
             throw new Exception("Dynamic property 'dhash' is not found");
         }
 
@@ -46,7 +46,7 @@ public final class CoderDecoder {
     public String decodePwd(String encodedPwd) throws Exception {
         hash = System.getProperty("DHASH", "null");
         if (hash.equals("null")) {
-            log.error("Dynamic property 'dhash' is not found");
+            log.error("decodePwd. Dynamic property 'dhash' is not found");
             throw new Exception("Dynamic property 'dhash' is not found");
         }
 

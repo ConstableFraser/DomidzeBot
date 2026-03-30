@@ -9,42 +9,40 @@ import org.jsoup.select.Elements;
 import org.shvedchikov.domidzebot.component.CoderDecoder;
 import org.shvedchikov.domidzebot.component.RestRequestSender;
 import org.shvedchikov.domidzebot.repository.HouseRepository;
-import org.shvedchikov.domidzebot.model.User;
 import org.shvedchikov.domidzebot.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Lazy;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Service
 public class OrderService {
-    @Autowired
-    private HouseRepository houseRepository;
+    private final HouseRepository houseRepository;
+    private final RestRequestSender restRequestSender;
+    private final CoderDecoder coderDecoder;
+    private final UserRepository userRepository;
+    private final CommonCalendarService commonCalendarService;
 
-    @Autowired
-    private RestRequestSender restRequestSender;
-
-    @Autowired
-    private CoderDecoder coderDecoder;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    private String login;
-    private byte[] password;
-    private User user;
     private static final String SEPARATOR = "-";
     private static final String ERRORMESSAGE = "В датах допущена ошибка.\nПопробуйте ещё раз";
+
+    public OrderService(HouseRepository houseRepository,
+                        RestRequestSender restRequestSender,
+                        CoderDecoder coderDecoder,
+                        UserRepository userRepository,
+                        @Lazy CommonCalendarService commonCalendarService) {
+        this.houseRepository = houseRepository;
+        this.restRequestSender = restRequestSender;
+        this.coderDecoder = coderDecoder;
+        this.userRepository = userRepository;
+        this.commonCalendarService = commonCalendarService;
+    }
 
     protected Status getDates(TelegramBotService telegramBotService, Update update) {
         telegramBotService.setStatus(Status.SETPERIOD);
@@ -53,9 +51,8 @@ public class OrderService {
         if (user.isEmpty() || !user.get().isEnabled()) {
             log.warn("Attempt to request period: {}", update.getMessage().getFrom().getId());
             telegramBotService.sendMessage(chatId, "Требуется регистрация");
-            return Status.SETPERIOD;
+            return Status.DEFAULT;
         }
-        this.user = user.get();
         telegramBotService.sendMessage(chatId, "Укажите даты через дефис, например: 02.04.2025-02.05.2025");
         telegramBotService.setFunc(telegramBotService.getStatus(), this::setDates);
         return Status.SETPERIOD;
@@ -70,15 +67,16 @@ public class OrderService {
             return Status.SETPERIOD;
         }
         String[] dates = text.split(SEPARATOR);
-        var startDate = parseDate(dates[0].trim());
-        var endDate = parseDate(dates[1].trim());
+        var formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        var startDate = LocalDate.parse(dates[0].trim(), formatter);
+        var endDate = LocalDate.parse(dates[1].trim(), formatter);
 
-        if (startDate.isEmpty() || endDate.isEmpty() || startDate.get().isAfter(endDate.get())) {
+        if (startDate.toString().isEmpty() || endDate.toString().isEmpty() || startDate.isAfter(endDate)) {
             messageUp(telegramBotService, update);
             return Status.SETPERIOD;
         }
         telegramBotService.sendMessage(update.getMessage().getChatId(),
-                getOrders(user, startDate.get(), endDate.get().plusDays(1), true));
+                commonCalendarService.getReportOfOrders(startDate, endDate, true));
         telegramBotService.setFunc(telegramBotService.getStatus(), this::getDates);
         return Status.DEFAULT;
     }
@@ -88,42 +86,32 @@ public class OrderService {
         telegramBotService.setFunc(telegramBotService.getStatus(), this::setDates);
     }
 
-    private Optional<LocalDate> parseDate(String date) {
-        var formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        try {
-            return Optional.of(LocalDate.parse(date, formatter));
-        } catch (DateTimeParseException ignored) {
-            log.warn("User date {} is not valid", date);
-            return Optional.empty();
-        }
+    public String getOrders(Long userId, LocalDate startDate, LocalDate endDate) {
+        return parserHtml(connectedToDomain(userId, startDate, endDate));
     }
 
-    protected String getOrders(User user, LocalDate startDate, LocalDate endDate, Boolean withPrice) {
-        var result = houseRepository.findAllByOwner(user.getId());
+    public String connectedToDomain(Long userId, LocalDate startDate, LocalDate endDate) {
+        var result = houseRepository.findAllByOwner(userId);
         // domain = String.valueOf(result.get(0).getOrDefault("domain", "null"));
-        login = String.valueOf(result.get(0).getOrDefault("login", "null"));
+        String login = String.valueOf(result.get(0).getOrDefault("login", "null"));
         var pwd = String.valueOf(result.get(0).getOrDefault("pwd", "null"));
 
+        byte[] password;
         try {
             password = coderDecoder.decodePwd(pwd).getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return parserHtml(connectedToDomain(startDate, endDate), withPrice);
-    }
 
-    private String connectedToDomain(LocalDate startDate, LocalDate endDate) {
         restRequestSender.setHost("https://ethnomir.ru/personal/owner/");
         restRequestSender.setHeaders(login, new String(password, StandardCharsets.UTF_8), startDate, endDate);
         return restRequestSender.sendRequest();
     }
 
-    private String parserHtml(String body, Boolean withPrice) {
-        int indexOrder = 4;
+    private String parserHtml(String body) {
         var regStr1 = "\\* Цена до вычета услуг управляющего агента. \\| ";
         var regStr2 = "Дома \\| Барн Хаус \\d+ \\| ";
         StringBuilder result = new StringBuilder();
-        Set<String> countOrders = new HashSet<>();
         Document document = Jsoup.parse(body);
         if (Objects.isNull(document)) {
             return "Информация о бронях отсутствует";
@@ -140,26 +128,14 @@ public class OrderService {
 
         while (iterRows.hasNext()) {
             var iterRow = iterRows.next();
-            if (!withPrice && !iterRows.hasNext()) {
-                break;
-            }
             Elements cells = iterRow.select("th, td");
-            Iterator<Element> iterCells = cells.iterator();
-            if (cells.size() > indexOrder) {
-                countOrders.add(cells.get(indexOrder).text());
-            }
-            while (iterCells.hasNext()) {
-                var element = iterCells.next();
-                if (!withPrice && !iterCells.hasNext()) {
-                    break;
-                }
+            for (Element element : cells) {
                 var text = element.text();
                 result.append(text).append(" | ");
             }
             var str = iterRows.hasNext() ? "\n" : "";
             result.append(str);
         }
-        result.append("Броней: ").append(countOrders.size());
         return result.toString().replaceAll(regStr1, "\n").replaceAll(regStr2, "");
     }
 }

@@ -38,7 +38,6 @@ public class UserService {
         return userMapper.map(user);
     }
 
-    //@PreAuthorize("@userUtils.isCurrentUser(#id)")
     public UserDTO update(@RequestBody UserUpdateDTO userData, @PathVariable Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));

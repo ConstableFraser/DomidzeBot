@@ -50,10 +50,14 @@ public class TelegramBotService {
     private KeyboardBotService keyboardBotService;
 
     @Autowired
+    private BookingService bookingService;
+
+    @Autowired
     private CoderService coderService;
 
     @Autowired
     private OrderService orderService;
+
 
     @Autowired
     private BotConfig botConfig;
@@ -87,8 +91,11 @@ public class TelegramBotService {
             🔮 @sanswed
             """;
 
+    @Autowired
+    private CommonCalendarService commonCalendarService;
+
     @PostConstruct
-    private void setTelegramService() {
+    private void init() {
         mapFunc.put(Status.FINISHEDREGISTER, registerUserBotService::startCompleteRegister);
         mapFunc.put(Status.LASTNAME, registerUserBotService::getLastName);
         mapFunc.put(Status.HOUSENUMBER, registerUserBotService::getHouse);
@@ -100,6 +107,7 @@ public class TelegramBotService {
         mapFunc.put(Status.DOMAIN, registerUserBotService::getDomain);
         mapFunc.put(Status.ENCODESTRING, coderService::encodeString);
         mapFunc.put(Status.DECODESTRING, coderService::decodeString);
+        mapFunc.put(Status.SETBOOKING, bookingService::onGetBooking);
         mapFunc.put(Status.LOGIN, registerUserBotService::getLogin);
         mapFunc.put(Status.EMAIL, registerUserBotService::getEmail);
         mapFunc.put(Status.NAME, registerUserBotService::getName);
@@ -107,6 +115,7 @@ public class TelegramBotService {
         mapFunc.put(Status.DECODEPWD, coderService::decodePwd);
         mapFunc.put(Status.HASH, controlHashService::setHash);
         mapFunc.put(Status.SETPERIOD, orderService::getDates);
+        mapFunc.put(Status.SETPRICE, commonCalendarService::setPrice);
     }
 
     private void prompt(Update update) {
@@ -155,7 +164,11 @@ public class TelegramBotService {
             startDate = endDate.minusMonths(countMonth);
         }
         var withPrice = !Command.MONTHMINUS.equals(Command.valueOf(command));
-        sendMessage(update.getMessage().getChatId(), orderService.getOrders(user.get(), startDate, endDate, withPrice));
+        sendMessage(
+                update.getMessage().getChatId(),
+                commonCalendarService.getReportOfOrders(startDate, endDate, withPrice)
+        );
+        status = Status.DEFAULT;
     }
 
     public void onSetHash(Update update) {
