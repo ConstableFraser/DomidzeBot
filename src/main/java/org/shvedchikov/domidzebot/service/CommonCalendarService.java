@@ -59,6 +59,7 @@ public class CommonCalendarService {
     public LinkedList<LinkedHashMap<String, String>> getTableOfCalendar() {
         var listDays = new LinkedList<LinkedHashMap<String, String>>();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        final int daysOfWeek = 7;
         var sequenceDay = LocalDate.now();
 
         while (sequenceDay.getDayOfWeek() != DayOfWeek.MONDAY) {
@@ -68,7 +69,7 @@ public class CommonCalendarService {
         for (int i = 0; i < amountDays;) {
             var map = new LinkedHashMap<String, String>();
 
-            for (int j = 0; j < 7 && i <= amountDays; j++) {
+            for (int j = 0; j < daysOfWeek && i <= amountDays; j++) {
                 var date = sequenceDay.format(dtf);
                 var price = Objects.equals(commonCalendar.getOrDefault(date, Map.of("channel", "default")).
                         get("channel"), "") ? commonCalendar.get(date).get("price") : "";
@@ -117,7 +118,7 @@ public class CommonCalendarService {
                     "countguests", "",
                     "telephone", "",
                     "program", "",
-                    "price", "[пусто]",
+                    "price", "пусто",
                     "channel", ""
             ));
         }
