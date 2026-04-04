@@ -151,7 +151,7 @@ public class TelegramCommonCalendarTest {
                 29.04.2026|1700
                 01.06.2026|3200
                 31.05.2026|2900
-                01.04.2026|1700
+                01.12.2026|1700
                 10.05.2026|11200
                 02.05.2026|290000
                 """;
@@ -171,7 +171,7 @@ public class TelegramCommonCalendarTest {
         doReturn(SUCCESS).when(telegramBotService).sendMessage(CHAT_ID, successMessage);
         message.setText(correctPrice);
         update.setMessage(message);
-        telegramBot.onUpdateReceived(update);
+        telegramBot.onUpdateReceived(update); //down test
         verify(telegramBotService, times(1)).sendMessage(CHAT_ID, successMessage);
         assertThat(telegramBotService.getStatus()).isEqualTo(Status.DEFAULT);
 
