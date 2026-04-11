@@ -578,13 +578,13 @@ h6 {
 /* Text in table
 ------------------------------------------------------------- */
 .price {
-  font-size: 0.75em;
+  font-size: 0.70em;
 }
 
-.price::after {
-  content: '\20BD';
-  margin-left: 0.25em;
-}
+/*.price::after {*/
+/*  content: '\20BD';*/
+/*  margin-left: 0.25em;*/
+/*}*/
 
 /* Dropdown
 ------------------------------------------------------------- */
