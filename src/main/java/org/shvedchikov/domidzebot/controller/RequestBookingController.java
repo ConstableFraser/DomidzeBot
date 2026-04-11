@@ -105,7 +105,7 @@ public class RequestBookingController {
 
         String finalStringMessage = stringMessage;
         users.forEach(user -> telegramBotService.sendMessage(user.getChatId(), finalStringMessage));
-        log.warn("ALARM! New Booking: " + finalStringMessage);
+        log.warn("New booking: {}", finalStringMessage);
         return "redirect:/#booking";
     }
 }

@@ -41,15 +41,16 @@ jobs:
       - name: Run tests
         run: ./gradlew test
         env:
+          INDEX: ${{ vars.INDEX }}
           HASH: ${{ secrets.HASH }}
           BOTNAME: ${{ vars.BOTNAME }}
           DDLAUTO: ${{ vars.DDLAUTO }}
           BOTADMIN: ${{ vars.BOTADMIN }}
+          SCHEDULER: ${{ vars.SCHEDULER }}
           BOTTOKEN: ${{ secrets.BOTTOKEN }}
           BOTENABLED: ${{ vars.BOTENABLED }}
           LOGFILENAME: ${{ vars.LOGFILENAME }}
           LOGFILEPATH: ${{ vars.LOGFILEPATH }}
-          INDEX: ${{ vars.INDEX }}
           POSTGRESQL_HOST: ${{ vars.POSTGRESQL_HOST }}
           POSTGRESQL_PORT: ${{ vars.POSTGRESQL_PORT }}
           POSTGRESQL_DBNAME: ${{ vars.POSTGRESQL_DBNAME }}

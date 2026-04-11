@@ -26,7 +26,7 @@ public class BotInitializer {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(telegramBot);
-            log.info("✅ Telegram bot registered successfully");
+            log.warn("✅ Telegram bot registered successfully");
         } catch (TelegramApiException e) {
             log.error("❌ Failed to register Telegram bot", e);
         }

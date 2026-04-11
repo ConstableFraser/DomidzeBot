@@ -256,7 +256,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="fs-4">Скидка 15% на раннее бронирование, начиная с <span
+                <div class="fs-5">Скидка 15% на раннее бронирование, начиная с <span
                         th:text="${nextMonthDate}"></span>
                     <div class="container mt-4">
                         <p>Условия акции:</p>
@@ -287,7 +287,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="fs-4">При бронировании до 15.04.2026 скидка 15% на проживание в любые даты с 01.04 по 28.04.2026
+                <div class="fs-5">При бронировании до 15.04.2026 скидка 15% на проживание в любые даты с 01.04 по 28.04.2026
                     <div class="container mt-4">
                         <p>Условия акции:</p>
                         <ul>
@@ -313,7 +313,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="fs-4">Скидка 20% при бронировании 2-х и более домов
+                <div class="fs-5">Скидка 20% при бронировании 2-х и более домов
                     <div class="container mt-4">
                         <p>Условия акции:</p>
                         <ul>
@@ -464,7 +464,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content model-form-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="schoolTravelLabel">Мастер-классы</h5>
+                <h5 class="modal-title" id="schoolTravelLabel">Школьные туры</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -1229,7 +1229,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content model-form-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="spaLabel">Спа></h5>
+                <h5 class="modal-title" id="spaLabel">Спа</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -1279,7 +1279,7 @@
             </div>
             <div class="modal-footer">
                 <div>Источник: ethnomir.ru</div>
-                <div>
+                <div class="ms-auto">
                     <button type="button" class="btn btn-link" data-bs-dismiss="modal">Закрыть</button>
                 </div>
             </div>
@@ -1972,7 +1972,7 @@
                              alt="Ранняя бронь скидки 15%">
                             <div class="carousel-caption alert bg-dark bg-opacity-75 text-white p-1 rounded-2"
                                  role="alert">
-                                <div class="fs-3">Акция! Раннее бронирование со скидкой</div>
+                                <div class="fs-4">Акция! Раннее бронирование со скидкой</div>
                                 <div>—</div>
                                 <div class="fs-5">15% скидка на бронь, начиная с <span
                                         th:text="${nextMonthDate}"></span>
@@ -1986,7 +1986,7 @@
                             <img src="images/promo/spring_ethnomir.png" class="d-block w-100" alt="Весенние скидки">
                             <div class="carousel-caption alert bg-dark bg-opacity-75 text-white p-1 rounded-2"
                                  role="alert">
-                                <div class="fs-3">Яркая весна 2026!</div>
+                                <div class="fs-4">Яркая весна 2026!</div>
                                 <div>—</div>
                                 <div class="fs-5">скидки до 20% на проживание в период с 01.04 по 28.04
                                 </div>
@@ -2000,7 +2000,7 @@
                                  alt="Групповые заезды, скидки">
                             <div class="carousel-caption alert bg-dark bg-opacity-75 text-white p-1 rounded-2"
                                  role="alert">
-                                <div class="fs-3">Получайте скидки при групповых заездах!</div>
+                                <div class="fs-4">Скидки при групповых заездах!</div>
                                 <div>—</div>
                                 <div class="fs-5">скидка 20% при бронировании от 2-х домов
                                 </div>
@@ -2071,7 +2071,7 @@
                         <label class="form-label">Ваш телефон</label>
                         <input type="tel" autocomplete="tel" class="form-control" name="mobileNumber" placeholder="+7 (___) ___-__-__" required>
                     </div>
-                    <div class="m-2 col-md-2">
+                    <div class="m-2 col-md-2 align-self-end">
                         <button type="submit" href="#" class="btn btn-arrow btn-primary mt-md-3">
                               <span>Бронировать
                                   <svg width="15" height="15">
@@ -2124,7 +2124,7 @@
                                                       th:utext="${entry.key.length() > 0 ? (#strings.substring(entry.key, 0, 2) + '<br>') : '<br>'}">
                                                 </span>
                                                 <span
-                                                      th:classappend="'text-muted price'"
+                                                      th:classappend="'text-muted'"
                                                       th:utext="${entry.value}">
                                                 </span>
                                             </th:block>
@@ -2135,7 +2135,7 @@
                                                 </span>
                                                 <em
                                                       th:classappend="'text-muted fs-6'"
-                                                      th:utext="'бронь'">
+                                                      th:utext="'—'">
                                                 </em>
                                             </span>
                                         </td>
@@ -2156,7 +2156,7 @@
                                                           th:utext="${entry.key.length() > 0 ? (#strings.substring(entry.key, 0, 2) + '<br>') : '<br>'}">
                                                     </span>
                                                 <span
-                                                        th:classappend="'text-muted price'"
+                                                        th:classappend="'text-muted'"
                                                         th:utext="${entry.value}">
                                                     </span>
                                             </th:block>
@@ -2167,7 +2167,7 @@
                                                     </span>
                                                     <em
                                                             th:classappend="'text-muted fs-6'"
-                                                            th:utext="'бронь'">
+                                                            th:utext="'—'">
                                                     </em>
                                                 </span>
                                         </td>
@@ -2193,7 +2193,7 @@
                                                           th:utext="${entry.key.length() > 0 ? (#strings.substring(entry.key, 0, 2) + '<br>') : '<br>'}">
                                                     </span>
                                                 <span
-                                                        th:classappend="'text-muted price'"
+                                                        th:classappend="'text-muted'"
                                                         th:utext="${entry.value}">
                                                     </span>
                                             </th:block>
@@ -2204,7 +2204,7 @@
                                                     </span>
                                                     <em
                                                             th:classappend="'text-muted fs-6'"
-                                                            th:utext="'бронь'">
+                                                            th:utext="'—'">
                                                     </em>
                                                 </span>
                                         </td>

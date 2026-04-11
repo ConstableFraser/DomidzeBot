@@ -63,7 +63,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         mapFunc.put(Command.MONTHPREV, telegramBotService::onGetPeriod);
         mapFunc.put(Command.HALFYEARPREV, telegramBotService::onGetPeriod);
         mapFunc.put(Command.USERS, telegramBotService::onGetListUsers);
-        mapFunc.put(Command.INIT, commonCalendarService::calculateCalendar);
+        mapFunc.put(Command.INIT, commonCalendarService::initCalendar);
         mapFunc.put(Command.BOOKING, bookingService::onSetBooking);
         mapFunc.put(Command.SETPRICE, commonCalendarService::onSetPrice);
         mapFunc.put(Command.UPDATE, commonCalendarService::update);
@@ -87,7 +87,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         try {
             execute(myCommands);
-            log.info("✅ Bot commands set successfully");
+            log.warn("✅ Bot commands set successfully");
         } catch (TelegramApiException e) {
             log.warn("⚠️ Bot commands not set: {}", e.getMessage());
             log.debug("Full error:", e);

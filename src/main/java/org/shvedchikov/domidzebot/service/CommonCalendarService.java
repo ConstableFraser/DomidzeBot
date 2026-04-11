@@ -8,9 +8,14 @@ import org.shvedchikov.domidzebot.dto.booking.BookingCreateDTO;
 import org.shvedchikov.domidzebot.exception.ResourceNotFoundException;
 import org.shvedchikov.domidzebot.repository.UserRepository;
 import org.shvedchikov.domidzebot.util.Status;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.context.annotation.Lazy;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -28,12 +33,14 @@ import java.util.Set;
 
 @Slf4j
 @Service
+@EnableScheduling
 public class CommonCalendarService {
     private final TelegramBotService telegramBotService;
     private final UserRepository userRepository;
     private final BookingService bookingService;
     private final OrderService orderService;
     private final BotConfig botConfig;
+    private final Update updateStub;
 
     @Getter
     private Map<String, Map<String, String>> commonCalendar = new HashMap<>();
@@ -54,6 +61,17 @@ public class CommonCalendarService {
         this.orderService = orderService;
         this.botConfig = botConfig;
         amountDays = LocalDate.MAX.lengthOfYear() * botConfig.getIndex();
+
+        updateStub = new Update();
+        var message = new Message();
+        var chat = new Chat();
+        var user = new User();
+
+        user.setId(botConfig.getIdAdmin());
+        message.setFrom(user);
+        chat.setId(0L);
+        message.setChat(chat);
+        updateStub.setMessage(message);
     }
 
     public LinkedList<LinkedHashMap<String, String>> getTableOfCalendar() {
@@ -83,7 +101,16 @@ public class CommonCalendarService {
         return listDays;
     }
 
-    public void calculateCalendar(Update update) {
+    @Scheduled(cron = "${calendar.scheduling.cron}")
+    private void autoUpdateCalendar() {
+        update(updateStub);
+    }
+
+    public void update(Update update) {
+        calculateCalendar(update, LocalDate.now(), LocalDate.now().plusDays(amountDays));
+    }
+
+    public void initCalendar(Update update) {
         calculateCalendar(update, LocalDate.now().minusDays(amountDays), LocalDate.now().plusDays(amountDays));
     }
 
@@ -102,27 +129,28 @@ public class CommonCalendarService {
             if (keySetEthnomir.contains(key)) {
                 log.warn("Внимание! Овербукинг на дату: {}", key);
                 telegramBotService.sendMessage(
-                        update.getMessage().getChat().getId(),
+                        botConfig.getIdAdmin(),
                         "Внимание! Овербукинг на дату: " + key
                 );
             }
         }
         commonCalendar.putAll(ordersSite);
         commonCalendar.putAll(ordersEthnomir);
-        for (var date = LocalDate.now().minusDays(amountDays);
-             date.isBefore(LocalDate.now().plusDays(amountDays + 1));
-             date = date.plusDays(1)) {
+        for (var date = beginDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
             commonCalendar.putIfAbsent(date.format(DTF), Map.of(
                     "checkin", "",
                     "checkout", "",
                     "countguests", "",
                     "telephone", "",
                     "program", "",
-                    "price", "пусто",
+                    "price", "—",
                     "channel", ""
             ));
         }
-        telegramBotService.sendMessage(update.getMessage().getChatId(), "Инициализация выполнена");
+        log.warn("Инициализация выполнена");
+        if (update.getMessage().getChatId() != 0) {
+            telegramBotService.sendMessage(update.getMessage().getChatId(), "Инициализация выполнена");
+        }
     }
 
     private Map<String, Map<String, String>> getOrdersOfSite(LocalDate beginDate, LocalDate endDate) {
@@ -284,10 +312,6 @@ public class CommonCalendarService {
                         }
                     }
             );
-    }
-
-    public void update(Update update) {
-        calculateCalendar(update, LocalDate.now(), LocalDate.now().plusDays(amountDays));
     }
 
     public String getReportOfOrders(LocalDate start, LocalDate end, boolean withPrice) {

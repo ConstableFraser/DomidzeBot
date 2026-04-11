@@ -559,8 +559,8 @@ h6 {
 }
 
 .btn {
-    --bs-btn-padding-x: 2.4rem;
-    --bs-btn-padding-y: 1rem;
+    --bs-btn-padding-x: 0.9rem;
+    --bs-btn-padding-y: 0.5rem;
     --bs-btn-font-size: 1rem;
     --bs-btn-font-weight: 400;
     text-transform: capitalize;

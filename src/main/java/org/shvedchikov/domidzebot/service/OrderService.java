@@ -110,7 +110,7 @@ public class OrderService {
 
     private String parserHtml(String body) {
         var regStr1 = "\\* Цена до вычета услуг управляющего агента. \\| ";
-        var regStr2 = "Дома \\| Барн Хаус \\d+ \\| ";
+        var regStr2 = "((Дома)|(Барн Хаусы)) \\| Барн Хаус \\d+ \\| ";
         StringBuilder result = new StringBuilder();
         Document document = Jsoup.parse(body);
         if (Objects.isNull(document)) {

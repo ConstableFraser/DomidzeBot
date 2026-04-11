@@ -186,7 +186,7 @@ class RequestBookingControllerTest {
         doReturn(noOrders).when(orderService).getOrders(userId,
                 LocalDate.now().minusDays(amountDays),
                 LocalDate.now().plusDays(amountDays));
-        commonCalendarService.calculateCalendar(update);
+        commonCalendarService.initCalendar(update);
 
         var request = post("/api/booking")
                 .with(csrf())
@@ -286,7 +286,7 @@ class RequestBookingControllerTest {
         doReturn(noOrders).when(orderService).getOrders(userId,
                 LocalDate.now().minusDays(amountDays),
                 LocalDate.now().plusDays(amountDays));
-        commonCalendarService.calculateCalendar(update);
+        commonCalendarService.initCalendar(update);
 
         var promptText = """
                 Установка стоимость брони. Одну или несколько.
