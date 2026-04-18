@@ -1,10 +1,10 @@
 FROM eclipse-temurin:19-jdk AS builder
 WORKDIR /app
-COPY gradle/wrapper gradle/wrapper
+COPY gradle/wrapper/ gradle/wrapper/
 COPY gradlew build.gradle.kts settings.gradle.kts ./
-COPY ./config config/
+COPY ./config/ config/
 RUN ./gradlew --no-daemon dependencies
-COPY src ./src
+COPY src/ ./src/
 RUN ./gradlew --no-daemon bootJar
 
 FROM eclipse-temurin:19-jre-alpine
@@ -13,8 +13,6 @@ COPY --from=builder /app/build/libs/*.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
-
 
 #FROM eclipse-temurin:19-jdk AS builder
 #WORKDIR /app

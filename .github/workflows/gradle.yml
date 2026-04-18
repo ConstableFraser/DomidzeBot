@@ -48,6 +48,7 @@ jobs:
           BOTADMIN: ${{ vars.BOTADMIN }}
           SCHEDULER: ${{ vars.SCHEDULER }}
           BOTTOKEN: ${{ secrets.BOTTOKEN }}
+          COUNTWEEKS: ${{ vars.COUNTWEEKS }}
           BOTENABLED: ${{ vars.BOTENABLED }}
           LOGFILENAME: ${{ vars.LOGFILENAME }}
           LOGFILEPATH: ${{ vars.LOGFILEPATH }}

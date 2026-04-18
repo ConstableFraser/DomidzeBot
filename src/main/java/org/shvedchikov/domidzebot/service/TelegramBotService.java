@@ -258,7 +258,7 @@ public class TelegramBotService {
         try {
             return telegramBot.execute(sendMessage).getMessageId();
         } catch (TelegramApiException e) {
-            log.error("ERROR send message");
+            log.error("ERROR send message: {}", sendMessage.getText());
             throw new RuntimeException(e);
         }
     }

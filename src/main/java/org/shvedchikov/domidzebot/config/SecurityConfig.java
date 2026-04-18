@@ -33,11 +33,11 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
 //                        .requestMatchers(HttpMethod.POST, "/api/credentials").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/booking").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**",
+                        .requestMatchers("/css/**", "/js/**", "/images/**",
                                 "/favicon.ico", "/fonts/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/index.html").permitAll()
-                        //                    .requestMatchers("/assets/**").permitAll()
+                        .requestMatchers("/yandex_a018a11cf524c193.html").permitAll()
 //                        .requestMatchers("/welcome").permitAll()
                         .anyRequest().authenticated())
                 .csrf(Customizer.withDefaults())
