@@ -37,8 +37,6 @@ public class SecurityConfig {
                                 "/favicon.ico", "/fonts/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/index.html").permitAll()
-                        .requestMatchers("/yandex_a018a11cf524c193.html").permitAll()
-//                        .requestMatchers("/welcome").permitAll()
                         .anyRequest().authenticated())
                 .csrf(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
