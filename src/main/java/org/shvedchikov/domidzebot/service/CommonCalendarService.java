@@ -134,10 +134,8 @@ public class CommonCalendarService {
                 );
             }
         }
-        commonCalendar.putAll(ordersSite);
-        commonCalendar.putAll(ordersEthnomir);
         for (var date = beginDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
-            commonCalendar.putIfAbsent(date.format(DTF), Map.of(
+            commonCalendar.put(date.format(DTF), Map.of(
                     "checkin", "",
                     "checkout", "",
                     "countguests", "",
@@ -147,6 +145,8 @@ public class CommonCalendarService {
                     "channel", ""
             ));
         }
+        commonCalendar.putAll(ordersSite);
+        commonCalendar.putAll(ordersEthnomir);
         log.warn("Инициализация выполнена");
         if (update.getMessage().getChatId() != 0) {
             telegramBotService.sendMessage(update.getMessage().getChatId(), "Инициализация выполнена");

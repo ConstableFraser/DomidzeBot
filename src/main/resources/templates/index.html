@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="ru">
 
 <head>
+    <link rel="icon" href="https://mirmiki.ru/favicon.svg" type="image/x-icon">
     <meta name="yandex-verification" content="7f35553223abf3b4" />
     <title>Аренда загородного дома Мирмики ☯ Отдых в Этномире, Калужская область</title>
     <meta charset="utf-8">
@@ -70,7 +71,7 @@
     <noscript><link rel="stylesheet" th:href="@{/css/bootstrap-icons.css}"></noscript>
 
     <!-- Vendor CSS -->
-    <link rel="preload" th:href="@{/css/vendor.css}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" th:href="@{/css/vendor.css}" media="print" onload="this.media='all'; this.onload=null;">
     <noscript><link rel="stylesheet" th:href="@{/css/vendor.css}"></noscript>
 
     <!-- AOS CSS -->
@@ -2138,7 +2139,7 @@
                                     </span>
                                 </td>
                             </tr>
-                            <tr th:if="${#strings.substring(calendar.get(i).keySet().toArray()[0], 0, 2)=='01'}">
+                            <tr th:if="${#strings.substring(calendar.get(i).keySet().toArray()[0], 0, 2)=='01' and not status.first}">
                                 <td colspan="7" class="table-active text-center fw-bold text-white">
                                     <span
                                         th:classappend="'text-muted'"
@@ -3020,7 +3021,7 @@
 </section>
 
 <section id="info" class="padding-small">
-    <div class="container" data-aos="fade-up">
+    <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 mb-2 col-md-8 col-xxl-6">
                 <h3 class="display-3 text-center fw-normal">Как устроен процесс</h3>
@@ -3069,7 +3070,7 @@
 
 <section id="footer">
     <hr class="text-black">
-    <div class="container padding-side padding-small" data-aos="fade-up">
+    <div class="container padding-side padding-small">
         <footer class="d-flex flex-column flex-lg-row justify-content-between gap-4">
             <div>
                 <h4 class="display-6 fw-normal text-muted">Этномир</h4>

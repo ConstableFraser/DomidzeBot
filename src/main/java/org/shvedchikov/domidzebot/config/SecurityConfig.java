@@ -33,8 +33,7 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
 //                        .requestMatchers(HttpMethod.POST, "/api/credentials").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/booking").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**",
-                                "/favicon.ico", "/fonts/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.svg", "/fonts/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/index.html").permitAll()
                         .anyRequest().authenticated())

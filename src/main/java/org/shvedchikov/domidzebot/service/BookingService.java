@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class BookingService {
-    public static final Integer LIMIT = 2000;
+    public static final Integer LIMIT = 10000;
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final HouseRepository houseRepository;

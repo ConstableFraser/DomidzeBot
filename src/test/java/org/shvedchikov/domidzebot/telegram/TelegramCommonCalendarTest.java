@@ -148,12 +148,12 @@ public class TelegramCommonCalendarTest {
                 12.02.2026|31200
                 """;
         var correctPrice = """
-                29.04.2026|1700
-                01.06.2026|3200
-                31.05.2026|2900
+                29.06.2026|1700
+                03.06.2026|3200
+                31.08.2026|2900
                 01.12.2026|1700
-                10.05.2026|11200
-                02.05.2026|290000
+                10.09.2026|11200
+                02.10.2026|290000
                 """;
         var successMessage = "Цены установлены";
 
@@ -181,17 +181,17 @@ public class TelegramCommonCalendarTest {
         update.setMessage(message);
         telegramBot.onUpdateReceived(update);
         var incorrectData = """
-                29.04.2026|1700
-                23.01.2026|3200
+                29.07.2026|1700
+                29.04.2026|3200
                 31.05.2026|2900
                 """;
         message.setText(incorrectData);
         update.setMessage(message);
         doReturn(SUCCESS).when(telegramBotService)
-                .sendMessage(CHAT_ID, "Ошибка в данных: 23.01.2026|3200\nзапустите команду заново");
+                .sendMessage(CHAT_ID, "Ошибка в данных: 29.04.2026|3200\nзапустите команду заново");
         telegramBot.onUpdateReceived(update);
         verify(telegramBotService, times(1))
-                .sendMessage(CHAT_ID, "Ошибка в данных: 23.01.2026|3200\nзапустите команду заново");
+                .sendMessage(CHAT_ID, "Ошибка в данных: 29.04.2026|3200\nзапустите команду заново");
         assertThat(telegramBotService.getStatus()).isEqualTo(Status.DEFAULT);
 
         //test: incorrect date set price
