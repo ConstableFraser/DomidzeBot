@@ -149,7 +149,7 @@ public class TelegramCommonCalendarTest {
                 """;
         var correctPrice = """
                 29.06.2026|1700
-                03.06.2026|3200
+                13.06.2026|3200
                 31.08.2026|2900
                 01.12.2026|1700
                 10.09.2026|11200

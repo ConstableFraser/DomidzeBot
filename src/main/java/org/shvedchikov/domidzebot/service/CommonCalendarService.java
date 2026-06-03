@@ -134,16 +134,28 @@ public class CommonCalendarService {
                 );
             }
         }
+        var map = Map.of(
+                "checkin", "",
+                "checkout", "",
+                "countguests", "",
+                "telephone", "",
+                "program", "",
+                "price", "—",
+                "channel", ""
+        );
+
         for (var date = beginDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
-            commonCalendar.put(date.format(DTF), Map.of(
-                    "checkin", "",
-                    "checkout", "",
-                    "countguests", "",
-                    "telephone", "",
-                    "program", "",
-                    "price", "—",
-                    "channel", ""
-            ));
+            var key = date.format(DTF);
+            if (ordersSite.containsKey(key) || ordersEthnomir.containsKey(key)) {
+                continue;
+            }
+            if (!commonCalendar.containsKey(key) || commonCalendar.get(key).get("price").isEmpty()) {
+                commonCalendar.put(key, map);
+                continue;
+            }
+            if (!commonCalendar.get(key).get("channel").isEmpty()) {
+                commonCalendar.put(key, map);
+            }
         }
         commonCalendar.putAll(ordersSite);
         commonCalendar.putAll(ordersEthnomir);
